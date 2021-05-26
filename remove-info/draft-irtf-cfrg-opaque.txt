@@ -1377,9 +1377,6 @@ Steps:
 
    Prior to the execution of these functions, both the client and the
    server MUST agree on a configuration; see Section 7 for details.
-   This configuration is represented internally by the "Context"
-   structure used in the AKE transcript; see Section 6.2.2.1 for
-   details.
 
 6.2.1.  Protocol Messages
 
@@ -1447,7 +1444,7 @@ Steps:
 
    Note that the Label parameter is not a NULL-terminated string.
 
-   OPAQUE-3DH can optionally include shared context information in the
+   OPAQUE-3DH can optionally include shared "context" information in the
    transcript, such as configuration parameters or application-specific
    info, e.g. "appXYZ-v1.2.3".  This information MUST be encoded with a
    length-prefix when included in the preamble.
@@ -1458,7 +1455,7 @@ Steps:
    Preamble(client_identity, ke1, server_identity, inner_ke2)
 
    Parameters:
-   - info, optional shared context information.
+   - context, optional shared context information.
 
    Input:
    - client_identity, the optional encoded client identity, which is set
@@ -1472,7 +1469,8 @@ Steps:
    - preamble, the protocol transcript with identities and messages.
 
    Steps:
-   1. preamble = concat("RFCXXXX", info,
+   1. preamble = concat("RFCXXXX",
+                        I2OSP(len(context), 2), context,
                         I2OSP(len(client_identity), 2), client_identity,
                         ke1,
                         I2OSP(len(server_identity), 2), server_identity,
