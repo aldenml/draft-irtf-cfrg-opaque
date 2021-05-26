@@ -2103,7 +2103,6 @@ C.1.2.  Input Values
    b241cb237e7d10f
    server_public_key: 18d5035fd0a9c1d6412226df037125901a43f4dff660c0549d
    402f672bcc0933
-   context: 4f50415155452d504f43
    server_nonce: f9c5ec75a8cd571370add249e99cb8a8c43f6ef05610ac6e354642b
    f4fedbf69
    client_nonce: 804133133e7ee6836c8515752e24bb44d323fef4ead34cde967798f
@@ -2216,7 +2215,6 @@ C.2.2.  Input Values
    662ad56a7e19b04
    server_public_key: 8aa90cb321a38759fc253c444f317782962ca18d33101eab2c
    8cda04405a181f
-   context: 4f50415155452d504f43
    server_nonce: 3fa57f7ef652185f89114109f5a61cc8c9216fdd7398246bb7a0c20
    e2fbca2d8
    client_nonce: a6bcd29b5aecc3507fc1f8f7631af3d2f5105155222e48099e5e608
@@ -2326,7 +2324,6 @@ C.3.2.  Input Values
    5ff421b1d63d7a3
    server_public_key: 025b95a6add1f2f3d038811b5ad3494bed73b1e2500d8dadec
    592d88406e25c2f2
-   context: 4f50415155452d504f43
    server_nonce: 8018e88ecfc53891529278c47239f8fe6f1be88972721898ef81cc0
    a76a0b550
    client_nonce: 967fcded96ed46986e60fcbdf985232639f537377ca3fcf07ad4899
@@ -2427,7 +2424,6 @@ C.4.2.  Input Values
    3b58e7d8f3eab2b
    server_public_key: 029a2c6097fbbcf3457fe3ff7d4ef8e89dab585a67dfed0905
    c9f104d909138bae
-   context: 4f50415155452d504f43
    server_nonce: 581ac468101aee528cc6b69daac7a90de8837d49708e76310767cbe
    4af18594d
    client_nonce: 46498f95ec7986f0602019b3fbb646db87a2fdbc12176d4f7ab74fa
@@ -2529,7 +2525,6 @@ C.5.2.  Input Values
    a23af6bdb847b0b
    server_public_key: 1ac449e9cdd633788069cca1aaea36ea359d7c2d493b254e5f
    fe8d64212dcc59
-   context: 4f50415155452d504f43
    server_nonce: ff26a6386c0a4077f512138e2203f247d56cbe900310cd43b4a55e4
    c54231cc6
    client_nonce: 077adba76f768fd0979f8dc006ca297e7954ebf0e81a893021ee24a
@@ -2647,7 +2642,6 @@ C.6.2.  Input Values
    82104eaaab43f01
    server_public_key: 846c28da13144e5908f1db4c8ba2c848ac34ae6b9a8855dcdb
    08d5ecfb000d73
-   context: 4f50415155452d504f43
    server_nonce: f35483b457e208972f1cbffbb70249fa31064a8883002d3b8024a02
    3b4feac41
    client_nonce: e0d04374ad9a276620c681abfca7bdb432e63509e5ec96ed2ec5542
@@ -2762,7 +2756,6 @@ C.7.2.  Input Values
    91c9485d74c9011
    server_public_key: 03d264f0e386387704da3d82a32883d2045326b32296ed1028
    12dd3ed6d26f3b8b
-   context: 4f50415155452d504f43
    server_nonce: 6819cd5cca28ea3ed382a155205669141c9bcbdca0a2c66ad0adc66
    f43e4e82c
    client_nonce: b9e5e27d7077eec3be075d20ac4e145572a45beeeb6066b9533421c
@@ -2867,7 +2860,6 @@ C.8.2.  Input Values
    717550e6140dc52
    server_public_key: 03512bae40ee42c0fce71f447611b39f2e91d68437f75fc1f1
    71e80ae8a09d30ce
-   context: 4f50415155452d504f43
    server_nonce: dc4ff822a5e5865d2f9e86117a7480a8a64a166e1cb724f59c39f93
    a802f7f70
    client_nonce: af0023091cb7e3e9c8581d8ca2837e78cd88fb76287d235b919bc75
