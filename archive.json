@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-05-25T01:09:07.801924+00:00",
+  "timestamp": "2021-05-27T01:35:55.561943+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -4480,7 +4480,7 @@
       ],
       "body": "Apologies if this has already been discussed or if it does not take into account security considerations already discussed.\r\n\r\nThe document describes that it is using 3DH as defined by Signal. However, this might not be completely accurate as Signal uses X3DH (as described here: https://signal.org/docs/specifications/x3dh/); even though, at the beginning, they were indeed using 3DH, as described here: https://signal.org/blog/simplifying-otr-deniability/ . So maybe there is a place to change that reference in the document.\r\n\r\nThe reason why Signal moved from 3DH to X3DH are many, but one of them is due to an attack on forward secrecy as provided by 3DH: an active adversary modifies the first flow from the Initiator to use an adversarially controlled ephemeral key, captures and drops the response from the Receiver, and then compromises the Initiator\u2019s long-term secret key. This attack requires a powerful adversary. This is also addressed in the specification itself (https://signal.org/docs/specifications/x3dh/ , section 4.5) and by the paper: https://content.sciendo.com/downloadpdf/journals/popets/2018/1/article-p21.xml\r\n\r\nSignal\u2019s X3DH protocol somewhat mitigates this attack by using signed prekeys. \r\n\r\nI haven't have the time to analyse this attack in the specific context of OPAQUE; but it could be that this has already been taken into account.\r\n\r\ncc./ @chris-wood ",
       "createdAt": "2021-03-13T04:10:42Z",
-      "updatedAt": "2021-04-14T19:34:57Z",
+      "updatedAt": "2021-05-26T19:51:22Z",
       "closedAt": null,
       "comments": [
         {
@@ -4492,7 +4492,7 @@
         },
         {
           "author": "bytemare",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "body": "My comment is not adding anything useful to the conversation, but just FTR that the link in the doc points to [this](https://signal.org/docs/specifications/doubleratchet/#recommended-cryptographic-algorithms), and I think it should point to [this](https://signal.org/docs/specifications/x3dh).",
           "createdAt": "2021-03-18T17:50:15Z",
           "updatedAt": "2021-03-18T17:50:15Z"
@@ -4506,7 +4506,7 @@
         },
         {
           "author": "bytemare",
-          "authorAssociation": "CONTRIBUTOR",
+          "authorAssociation": "COLLABORATOR",
           "body": "Oh yes, totally agree! I didn't see it was there \ud83d\udc4d\r\n( it's not obviously written on it \ud83d\ude05 )",
           "createdAt": "2021-03-18T18:23:00Z",
           "updatedAt": "2021-03-18T18:23:30Z"
@@ -4531,6 +4531,13 @@
           "body": "Thank you @hugokraw for the explanation and @kevinlewi for the pointer ;) \r\n\r\nWe talked this offline with @jhoyla extensively and agree on this. \r\n\r\nWe will send a PR just with clarifications for a reader that gets confused, and cc you all into it for your comments ;)",
           "createdAt": "2021-03-22T20:08:25Z",
           "updatedAt": "2021-03-22T20:08:25Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@claucece, @jhoyla: should we still expect a PR for this issue? If not, can we close this out?",
+          "createdAt": "2021-05-26T19:51:22Z",
+          "updatedAt": "2021-05-26T19:51:22Z"
         }
       ]
     },
@@ -4609,7 +4616,7 @@
       "id": "MDU6SXNzdWU4NDg3MjMyMDA=",
       "title": "3DH: highlight the usage of client_info and server_info",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/169",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "armfazh",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -4618,8 +4625,8 @@
       ],
       "body": "In the 3DH instantiation, the fields `client_info` and `server_info` are marked as optional and application-specific. \r\n\r\n```\r\nclient_info\r\nOptional application-specific information to exchange during the protocol.\r\n\r\nenc_server_info\r\nOptional application-specific information to exchange during the protocol encrypted under key Ke2, defined below.\r\n```\r\n\r\nThe request here is to highlight in the document what are the possible use cases of these fields, and to remark the relevance of having these fields vs not having them at all.\r\n \r\n",
       "createdAt": "2021-04-01T19:16:52Z",
-      "updatedAt": "2021-05-24T20:28:22Z",
-      "closedAt": null,
+      "updatedAt": "2021-05-27T00:57:00Z",
+      "closedAt": "2021-05-26T19:50:54Z",
       "comments": [
         {
           "author": "bytemare",
@@ -4680,9 +4687,65 @@
         {
           "author": "chris-wood",
           "authorAssociation": "COLLABORATOR",
-          "body": "Sorry for the delay in following up on this! Please see below.\r\n\r\n> Overall, there seems to be strong support for removing the encrypted server_info message and since this is a functional decision and not a cryptographic one I will defer to the engineering judgment (*). I wonder if there should be some extensibility mechanism for the protocol messages even if it does not include the mechanics of how to encrypt such extensions.\r\n\r\nIndeed. I think we can safely remove this piece of information. What remains, then, is the client info. (The hardening parameters are part of the configuration information, so they would be exchanged alongside the config.)\r\n\r\nI did a (albeit quick) survey of PAKE uses top of mind, as well as other asymmetric and symmetric PAKE protocols, with respect to their support for \"early\" client data. The results are below. (Please attribute errors or inaccuracies to me!)\r\n\r\nPAKE use cases:\r\n- [Magic Wormhole](https://github.com/magic-wormhole/magic-wormhole): no application data\r\n- [CHIP](https://github.com/project-chip/connectedhomeip): no application data\r\n- [WPA-2 authentication](https://papers.mathyvanhoef.com/ccs2017.pdf): no application data\r\n\r\nSymmetric:\r\n- [J-PAKE](https://datatracker.ietf.org/doc/html/rfc8236#section-2.2): no application data\r\n- [SPAKE2](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-spake2-18): no application data\r\n- [SPEKE](https://eprint.iacr.org/2014/585.pdf): no application data, but identities are transferred\r\n- [CPace](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-cpace-01#section-3.2): no application data\r\n\r\nAsymmetric:\r\n- [SPAKE2+](https://datatracker.ietf.org/doc/html/draft-bar-cfrg-spake2plus-02): no application data\r\n- OPAQUE: application data!\r\n- [AuCPace](https://eprint.iacr.org/2018/286.pdf): no application data, but identities are transferred\r\n- [SRP](http://srp.stanford.edu/): unclear\r\n- BSPAKE: unclear\r\n\r\nIn general, it seems this is not a useful or sought-after feature, else we would see it more widely used or supported in existing protocols. Given this, possible privacy concerns about sending application-specific information in client info, I'm inclined to drop both application data fields from the handshake. If circumstances change and this prohibits some future application from using OPAQUE, we can always rev the protocol version.",
+          "body": "Sorry for the delay in following up on this! Please see below.\r\n\r\n> Overall, there seems to be strong support for removing the encrypted server_info message and since this is a functional decision and not a cryptographic one I will defer to the engineering judgment (*). I wonder if there should be some extensibility mechanism for the protocol messages even if it does not include the mechanics of how to encrypt such extensions.\r\n\r\nIndeed. I think we can safely remove this piece of information. What remains, then, is the client info. (The hardening parameters are part of the configuration information, so they would be exchanged alongside the config.)\r\n\r\nI did a (albeit quick) survey of PAKE uses top of mind, as well as other asymmetric and symmetric PAKE protocols, with respect to their support for \"early\" client data. The results are below. (Please attribute errors or inaccuracies to me!)\r\n\r\nPAKE use cases:\r\n- [Magic Wormhole](https://github.com/magic-wormhole/magic-wormhole): no application data\r\n- [CHIP](https://github.com/project-chip/connectedhomeip): no application data\r\n- [WPA-2 authentication](https://papers.mathyvanhoef.com/ccs2017.pdf): no application data\r\n\r\nSymmetric:\r\n- [J-PAKE](https://datatracker.ietf.org/doc/html/rfc8236#section-2.2): no application data\r\n- [SPAKE2](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-spake2-18): no application data\r\n- [SPEKE](https://eprint.iacr.org/2014/585.pdf): no application data, but identities are transferred\r\n- [CPace](https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-cpace-01#section-3.2): no application data\r\n\r\nAsymmetric:\r\n- [SPAKE2+](https://datatracker.ietf.org/doc/html/draft-bar-cfrg-spake2plus-02): no application data\r\n- OPAQUE: application data!\r\n- [AuCPace](https://eprint.iacr.org/2018/286.pdf): no application data, but identities are transferred\r\n- [SRP](http://srp.stanford.edu/): unclear\r\n- BSPAKE: unclear\r\n\r\nIn general, it seems this is not a useful or sought-after feature, else we would see it more widely used or supported in existing protocols. Given this, as well as possible privacy concerns about sending application-specific information in client info, I'm inclined to drop both application data fields from the handshake. If circumstances change and this prohibits some future application from using OPAQUE, we can always rev the protocol version.",
           "createdAt": "2021-05-24T20:28:22Z",
-          "updatedAt": "2021-05-24T20:28:22Z"
+          "updatedAt": "2021-05-25T12:39:33Z"
+        },
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "NONE",
+          "body": "From the use cases I'm familiar with, early data has never really been something that we felt we really needed. \r\n\r\nThat said, SPAKE2+ does provide a mechanism to pass authenticated data into the confirmation messages, which is very useful for preventing downgrade attacks on protocol versions and ensure that both parties have agreed on a list of supported versions or anything else that would benefit from being authenticated.",
+          "createdAt": "2021-05-25T12:20:46Z",
+          "updatedAt": "2021-05-25T12:20:46Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@bytemare, @kevinlewi: the SPAKE2+ approach referenced by @FredericJacobs seems like the right thing here. Namely, allow both parties to input a _shared_ context string that's prepended to the transcript. This can include anything external to the protocol or was otherwise used to configure the protocol, e.g., version information, MHF parameters, etc. Importantly, unlike client_info and server_info, this information is _not_ part of the OPAQUE wire image. ",
+          "createdAt": "2021-05-25T15:02:46Z",
+          "updatedAt": "2021-05-25T15:02:46Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closed via #211. @armfazh, please reopen if you disagree!",
+          "createdAt": "2021-05-26T19:50:54Z",
+          "updatedAt": "2021-05-26T19:50:54Z"
+        },
+        {
+          "author": "hugokraw",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I am replying here since this issue is closed and I don't know how to reply\ndirectly from github in this case (it is ok if you laugh at me, just not\nloud enough that I could hear it :-).\n\nI am glad you agree to adding this way of authenticating information\npassed/agreed between client and server. What's not clear to me is what is\nmeant by \"prepended to the transcript\"? When/how is it prepended and how is\nauthentication applied to it? Is it via the MAC on the wire or via KDF? Or\nsome other form?\n\nUnrelated question: Chris references other a/PAKE protocols. Do any of them\nhave a detailed *full* specification like the one we are developing here?\nOr a working implementation?  (Anything less detailed than that will not\ncare about specifying if implementation data needs or does not need to be\ncommunicated as part of the protocol.)\n\nOn Tue, May 25, 2021 at 11:11 AM Christopher Wood ***@***.***>\nwrote:\n\n> @bytemare <https://github.com/bytemare>, @kevinlewi\n> <https://github.com/kevinlewi>: the SPAKE2+ approach referenced by\n> @FredericJacobs <https://github.com/FredericJacobs> seems like the right\n> thing here. Namely, allow both parties to input a *shared* context string\n> that's prepended to the transcript. This can include anything external to\n> the protocol or was otherwise used to configure the protocol, e.g., version\n> information, MHF parameters, etc. Importantly, unlike client_info and\n> server_info, this information is *not* part of the OPAQUE wire image.\n>\n> \u2014\n> You are receiving this because you were mentioned.\n> Reply to this email directly, view it on GitHub\n> <https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/169#issuecomment-847945665>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AICFFXQK4QMCJOH66AMVCI3TPO423ANCNFSM42HUZY7A>\n> .\n>\n",
+          "createdAt": "2021-05-26T21:51:36Z",
+          "updatedAt": "2021-05-26T21:51:36Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> I am replying here since this issue is closed and I don't know how to reply directly from github in this case (it is ok if you laugh at me, just not loud enough that I could hear it :-).\r\n\r\nNo problem =)\r\n\r\n> I am glad you agree to adding this way of authenticating information passed/agreed between client and server. What's not clear to me is what is meant by \"prepended to the transcript\"? When/how is it prepended and how is authentication applied to it? Is it via the MAC on the wire or via KDF? Or some other form?\r\n\r\nBy \"prepend to the transcript,\" we mean that the transcript used to derive keys includes: (1) the shared context string, and (2) then all handshake messages sent on the wire. (For comparison, client_info was also authenticated by including it in the transcript. The difference here is that client_info was sent on the wire in the handshake message, whereas the shared context string _need not_ be sent on the wire.) \r\n\r\n> Unrelated question: Chris references other a/PAKE protocols. Do any of them have a detailed *full* specification like the one we are developing here? Or a working implementation?\r\n\r\nI'm not sure what you mean by \"full\" specification here. CPace and SPAKE2+, for example, are \"full\". OPAQUE just happens to cover more wire format details, leaving less to implementers to figure out. ",
+          "createdAt": "2021-05-26T22:00:15Z",
+          "updatedAt": "2021-05-26T22:00:15Z"
+        },
+        {
+          "author": "hugokraw",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for the explanation. I assumed it was via the KDF indeed. I have a\ngeneral preference for authenticating things via the authentication\nmechanism in the AKE rather than via the KDF (it meshes better with the\nlogic of the protocol). Note that you could add this out-of-band value to\nthe information being MACed instead of under the KDF. But it is ok to do it\nvia the KDF too.\n\nWhile at it, what was your motivation to include the full transcript  into\nthe KDF? Did you have a specific reason for it or was it based on \"best\npractice\" and/or consistency with TLS 1.3 approach?\n\nOn Wed, May 26, 2021 at 6:00 PM Christopher Wood ***@***.***>\nwrote:\n\n> I am replying here since this issue is closed and I don't know how to\n> reply directly from github in this case (it is ok if you laugh at me, just\n> not loud enough that I could hear it :-).\n>\n> No problem =)\n>\n> I am glad you agree to adding this way of authenticating information\n> passed/agreed between client and server. What's not clear to me is what is\n> meant by \"prepended to the transcript\"? When/how is it prepended and how is\n> authentication applied to it? Is it via the MAC on the wire or via KDF? Or\n> some other form?\n>\n> By \"prepend to the transcript,\" we mean that the transcript used to derive\n> keys includes: (1) the shared context string, and (2) then all handshake\n> messages sent on the wire. (For comparison, client_info was also\n> authenticated by including it in the transcript. The difference here is\n> that client_info was sent on the wire in the handshake message, whereas the\n> shared context string *need not* be sent on the wire.)\n>\n> Unrelated question: Chris references other a/PAKE protocols. Do any of\n> them have a detailed *full* specification like the one we are developing\n> here? Or a working implementation?\n>\n> I'm not sure what you mean by \"full\" specification here. CPace and\n> SPAKE2+, for example, are \"full\". OPAQUE just happens to cover more wire\n> format details, leaving less to implementers to figure out.\n>\n> \u2014\n> You are receiving this because you were mentioned.\n> Reply to this email directly, view it on GitHub\n> <https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/169#issuecomment-849149138>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AICFFXTNR3T5ZGAAREKN6OTTPVVP5ANCNFSM42HUZY7A>\n> .\n>\n",
+          "createdAt": "2021-05-26T22:27:37Z",
+          "updatedAt": "2021-05-26T22:27:37Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> While at it, what was your motivation to include the full transcript  into the KDF? Did you have a specific reason for it or was it based on \"best practice\" and/or consistency with TLS 1.3 approach?\r\n\r\nIt seems to be best practice and overall easier to implement. Clients and servers can just fold their entire handshake messages into the running hash, rather than pick out specific fields to include. That is, the logic for the server is basically: \r\n\r\n1. Update hash with context\r\n2. Read message from wire\r\n3. Update hash with message\r\n4. ... do rest of the protocol",
+          "createdAt": "2021-05-26T22:41:02Z",
+          "updatedAt": "2021-05-26T22:41:02Z"
+        },
+        {
+          "author": "hugokraw",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks.\n\nOn Wed, May 26, 2021 at 6:41 PM Christopher Wood ***@***.***>\nwrote:\n\n> While at it, what was your motivation to include the full transcript into\n> the KDF? Did you have a specific reason for it or was it based on \"best\n> practice\" and/or consistency with TLS 1.3 approach?\n>\n> It seems to be best practice and overall easier to implement. Clients and\n> servers can just fold their entire handshake messages into the running\n> hash, rather than pick out specific fields to include. That is, the logic\n> for the server is basically:\n>\n>    1. Update hash with context\n>    2. Read message from wire\n>    3. Update hash with message\n>    4. ... do rest of the protocol\n>\n> \u2014\n> You are receiving this because you were mentioned.\n> Reply to this email directly, view it on GitHub\n> <https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/169#issuecomment-849167493>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AICFFXQ6C2CXMHRM2VO56F3TPV2IXANCNFSM42HUZY7A>\n> .\n>\n",
+          "createdAt": "2021-05-27T00:57:00Z",
+          "updatedAt": "2021-05-27T00:57:00Z"
         }
       ]
     },
@@ -4725,13 +4788,15 @@
       "state": "OPEN",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "chris-wood"
+      ],
       "labels": [
         "editorial"
       ],
       "body": "We currently have _a lot_ of knobs for applications and wrapper protocols choosing to implement OPAQUE. We should add text which discusses the different knobs, how they might be controlled, and how higher-level APIs might be presented to applications.",
       "createdAt": "2021-04-14T19:49:23Z",
-      "updatedAt": "2021-04-14T19:49:29Z",
+      "updatedAt": "2021-05-26T19:52:05Z",
       "closedAt": null,
       "comments": []
     },
@@ -4941,9 +5006,17 @@
       "labels": [],
       "body": "Like #173 but for deployments, as there are specificities to OPAQUE that implementations can't always cover and that users of the protocol should or must consider.\r\n\r\nAn incomplete list would include:\r\n\r\n- Given the client-enumeration mitigation constraints\r\n  - applications must use the same configuration during their lifecycle (including the client records)\r\n- The OPRF seed is not just a global salt and must be given particular care regarding its secrecy and longevity\r\n- credential_identifiers and client_identifiers MUST be unique amongst all clients of the app",
       "createdAt": "2021-05-11T17:08:37Z",
-      "updatedAt": "2021-05-11T17:08:37Z",
+      "updatedAt": "2021-05-26T19:51:52Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@bytemare can you please take this and prepare a PR?",
+          "createdAt": "2021-05-26T19:51:52Z",
+          "updatedAt": "2021-05-26T19:51:52Z"
+        }
+      ]
     },
     {
       "number": 210,
@@ -16008,15 +16081,15 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "Opening as a draft to discuss. Are there other considerations we want to add?",
+      "body": "Closes #173 and #204.",
       "createdAt": "2021-04-24T15:36:11Z",
-      "updatedAt": "2021-04-26T13:44:20Z",
+      "updatedAt": "2021-05-26T22:23:55Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
-      "baseRefOid": "e221eaf702c2f018ad73bdfd3e043abbf8706b1f",
+      "baseRefOid": "fc42616e4908d4ebfa94ca9ff3d93131f05479c6",
       "headRepository": "cfrg/draft-irtf-cfrg-opaque",
       "headRefName": "caw/app-considerations",
-      "headRefOid": "260754a38b0f8431a571cb6ed8956aad6f5e0906",
+      "headRefOid": "a7c0cabcacbf882113dbc3454bddac3707ff9e14",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -16028,6 +16101,13 @@
           "body": "Do you mean with regard to #169 and #173?",
           "createdAt": "2021-04-26T13:42:57Z",
           "updatedAt": "2021-04-26T13:44:20Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@bytemare I also included #204 changes here. (Do you think more needs to be said to close out that issue?)",
+          "createdAt": "2021-05-26T22:23:18Z",
+          "updatedAt": "2021-05-26T22:23:18Z"
         }
       ],
       "reviews": [
@@ -16506,6 +16586,150 @@
           "body": "I'll update the Sage code in a followup PR. ",
           "createdAt": "2021-05-24T19:36:16Z",
           "updatedAt": "2021-05-24T19:36:16Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 211,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjUyNzM5MDI2",
+      "title": "Remove client_info and server_info and add shared Context to transcript",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/211",
+      "state": "MERGED",
+      "author": "bytemare",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Addresses #169 \r\n\r\ntl;dr\r\n\r\n- completely remove client_info and server_info\r\n- replace \"3DH\" transcript prefix with \"RFCXXXX\" (to be replaced by the actual RFC id)\r\n- introduce optional shared context info \"info\" in configuration, to be length-prefix encoded in the transcript: \"RFCXXXX\" + encoded(info) + ...\r\n- POC uses \"OPAQUE-POC\" as shared info field",
+      "createdAt": "2021-05-25T19:31:49Z",
+      "updatedAt": "2021-05-26T17:27:52Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "11d7a4d5ddc95bd762f7b6727401922800a30fb2",
+      "headRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "headRefName": "dbz/remove-info",
+      "headRefOid": "a65a0aa53faf820db2128663f36f4e3baa9ae218",
+      "closedAt": "2021-05-26T17:27:51Z",
+      "mergedAt": "2021-05-26T17:27:51Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "82277527a1d2b1565381431d5e3bffa15f46c99b"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjY4MjgzOTk1",
+          "commit": {
+            "abbreviatedOid": "6d78ce0"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Great start! I'd simplify the format and structure of `Context` somewhat. (Were you also planning on updating the code? If not, I can do it.)",
+          "createdAt": "2021-05-25T19:51:06Z",
+          "updatedAt": "2021-05-25T19:54:29Z",
+          "comments": [
+            {
+              "originalPosition": 143,
+              "body": "I would simplify this and just say that `context` is an arbitrary-length byte string, and it's encoded in the transcript preamble like so:\r\n\r\n```\r\npreamble = concat(I2OSP(len(context), 2), context, ...\r\n```\r\n\r\nWe could give guidance for what this context should include, such as what you list below, but it _seems_ overly prescriptive to force this particular structure here.",
+              "createdAt": "2021-05-25T19:51:06Z",
+              "updatedAt": "2021-05-25T19:54:29Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjY4MzIzNjU1",
+          "commit": {
+            "abbreviatedOid": "6d78ce0"
+          },
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-05-25T20:10:01Z",
+          "updatedAt": "2021-05-26T07:09:34Z",
+          "comments": [
+            {
+              "originalPosition": 143,
+              "body": "How about this\r\n\r\n> OPAQUE-3DH can additionally include shared context information in the transcript, such as configuration parameters or application-specific info, e.g. \"appXYZ-va.b.c\"\r\n\r\nand further down\r\n\r\n> Parameters:\r\n> context, a shared context string.\r\n> ...\r\n> Steps:\r\n> 1. preamble = concat(\"RFCXXXX\",\r\n>                      context,\r\n>                      I2OSP(len(client_identity), 2), client_identity,\r\n>                      ke1,\r\n>                      I2OSP(len(server_identity), 2), server_identity,\r\n>                      inner_ke2)\r\n> 2. Output preamble",
+              "createdAt": "2021-05-25T20:10:01Z",
+              "updatedAt": "2021-05-26T07:09:34Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjY5MzQ1MzQ1",
+          "commit": {
+            "abbreviatedOid": "9c901cd"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-05-26T17:25:37Z",
+          "updatedAt": "2021-05-26T17:25:37Z",
+          "comments": [
+            {
+              "originalPosition": 125,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2021-05-26T17:25:37Z",
+              "updatedAt": "2021-05-26T17:25:37Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjY5MzQ2NjI4",
+          "commit": {
+            "abbreviatedOid": "9c901cd"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-05-26T17:27:03Z",
+          "updatedAt": "2021-05-26T17:27:03Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 212,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjU0MTAwNTA3",
+      "title": "Move Context to the configuration section. Include it in the test vectors",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/212",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Small cleanup from #211.",
+      "createdAt": "2021-05-26T18:10:56Z",
+      "updatedAt": "2021-05-26T19:50:24Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "82277527a1d2b1565381431d5e3bffa15f46c99b",
+      "headRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "headRefName": "caw/update-vectors-and-config",
+      "headRefOid": "d4bf580c61d0ff9a17b6c0405380d3c3e941af58",
+      "closedAt": "2021-05-26T19:50:24Z",
+      "mergedAt": "2021-05-26T19:50:24Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "fc42616e4908d4ebfa94ca9ff3d93131f05479c6"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjY5NDEwODIx",
+          "commit": {
+            "abbreviatedOid": "d4bf580"
+          },
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-05-26T18:29:44Z",
+          "updatedAt": "2021-05-26T18:29:44Z",
           "comments": []
         }
       ]
