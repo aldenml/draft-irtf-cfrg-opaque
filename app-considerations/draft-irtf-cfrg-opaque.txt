@@ -1860,12 +1860,12 @@ Steps:
 
    Finally, OPAQUE does not prevent prevent enumeration via the
    registration flow.  For example, if an attacker tries to register
-   with a given client identity that is also in use, the server will not
-   complete the protocol.  This allows an attacker to use the server's
-   response during registration as an oracle for whether a given client
-   identity is registered.  Applications should mitigate against this
-   type of attack by rate limiting or otherwise restricting the
-   registration flow.
+   with a given client identity that is already in use, the server will
+   not complete the protocol.  This allows an attacker to use the
+   server's response during registration as an oracle for whether a
+   given client identity is registered.  Applications should mitigate
+   against this type of attack by rate limiting or otherwise restricting
+   the registration flow.
 
 9.9.  Password Salt and Storage Implications
 
