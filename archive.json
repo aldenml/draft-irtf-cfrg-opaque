@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-05-30T02:14:56.030702+00:00",
+  "timestamp": "2021-06-03T02:27:28.417593+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -4799,7 +4799,7 @@
       "id": "MDU6SXNzdWU4NTgyMTMwMjY=",
       "title": "Add application consideration section",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/173",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -4810,8 +4810,8 @@
       ],
       "body": "We currently have _a lot_ of knobs for applications and wrapper protocols choosing to implement OPAQUE. We should add text which discusses the different knobs, how they might be controlled, and how higher-level APIs might be presented to applications.",
       "createdAt": "2021-04-14T19:49:23Z",
-      "updatedAt": "2021-05-26T19:52:05Z",
-      "closedAt": null,
+      "updatedAt": "2021-06-02T19:19:09Z",
+      "closedAt": "2021-06-02T19:19:09Z",
       "comments": []
     },
     {
@@ -5004,24 +5004,39 @@
       "labels": [],
       "body": "This should probably include, among other things, how to implement each routine in constant time (in the user secret parameters), and why that's important. ",
       "createdAt": "2021-04-29T17:21:48Z",
-      "updatedAt": "2021-04-29T17:21:48Z",
+      "updatedAt": "2021-06-02T19:21:12Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "kevinlewi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Two more items to consider adding:\r\n1) Ensuring that all secrets are zero'd/cleared upon deallocation, both on the client and server side,\r\n2) Timing attacks for the \"faked credential response\", an implementation needs to be very cautious when branching on whether or not a registered password file for the user exists",
+          "createdAt": "2021-06-02T19:20:31Z",
+          "updatedAt": "2021-06-02T19:20:31Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@kevinlewi would you be able to prep a PR for this?",
+          "createdAt": "2021-06-02T19:21:12Z",
+          "updatedAt": "2021-06-02T19:21:12Z"
+        }
+      ]
     },
     {
       "number": 204,
       "id": "MDU6SXNzdWU4ODc5MTE2NTM=",
       "title": "Add deployment considerations section",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/204",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bytemare",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Like #173 but for deployments, as there are specificities to OPAQUE that implementations can't always cover and that users of the protocol should or must consider.\r\n\r\nAn incomplete list would include:\r\n\r\n- Given the client-enumeration mitigation constraints\r\n  - applications must use the same configuration during their lifecycle (including the client records)\r\n- The OPRF seed is not just a global salt and must be given particular care regarding its secrecy and longevity\r\n- credential_identifiers and client_identifiers MUST be unique amongst all clients of the app",
       "createdAt": "2021-05-11T17:08:37Z",
-      "updatedAt": "2021-05-26T19:51:52Z",
-      "closedAt": null,
+      "updatedAt": "2021-06-02T22:07:18Z",
+      "closedAt": "2021-06-02T22:07:18Z",
       "comments": [
         {
           "author": "chris-wood",
@@ -5029,6 +5044,20 @@
           "body": "@bytemare can you please take this and prepare a PR?",
           "createdAt": "2021-05-26T19:51:52Z",
           "updatedAt": "2021-05-26T19:51:52Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "(oops)",
+          "createdAt": "2021-06-02T19:22:30Z",
+          "updatedAt": "2021-06-02T19:22:30Z"
+        },
+        {
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Nah, I think we can close it. It's more or less the same the other issue :)",
+          "createdAt": "2021-06-02T22:06:56Z",
+          "updatedAt": "2021-06-02T22:06:56Z"
         }
       ]
     },
@@ -16090,24 +16119,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NjIyNjAzMDUz",
       "title": "Add application considerations.",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/199",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #173 and #204.",
       "createdAt": "2021-04-24T15:36:11Z",
-      "updatedAt": "2021-05-29T12:17:05Z",
+      "updatedAt": "2021-06-02T19:19:09Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "fc42616e4908d4ebfa94ca9ff3d93131f05479c6",
       "headRepository": "cfrg/draft-irtf-cfrg-opaque",
       "headRefName": "caw/app-considerations",
       "headRefOid": "d3f04d4e0f7bba511fc9d0d8b7f8c00a0d6d50d3",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2021-06-02T19:19:09Z",
+      "mergedAt": "2021-06-02T19:19:08Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "72ec450e9c4353e888f60497955f905f2ba3f251"
+      },
       "comments": [
         {
           "author": "bytemare",
@@ -16224,6 +16255,19 @@
               "updatedAt": "2021-05-29T12:17:05Z"
             }
           ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njc0NTkwMTE3",
+          "commit": {
+            "abbreviatedOid": "d3f04d4"
+          },
+          "author": "kevinlewi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "This is very well-written. Thank you!",
+          "createdAt": "2021-06-02T19:09:56Z",
+          "updatedAt": "2021-06-02T19:09:56Z",
+          "comments": []
         }
       ]
     },
@@ -16827,6 +16871,62 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 213,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjU5NTg4MzI3",
+      "title": "Implement fake credentials response",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/213",
+      "state": "OPEN",
+      "author": "bytemare",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "bytemare"
+      ],
+      "labels": [
+        "next-version"
+      ],
+      "body": "Addresses #166 \r\n\r\nA global fake record is created, that should be used in place of a legitimate one:\r\n- envelope data is all 0 bytes\r\n- a fake client public key is generated to serve for the AKE\r\n- a random fake masking key is used\r\n\r\nApplication consideration for #199 \r\n- server must not evaluate oprf on nil or empty user id and must abort\r\n\r\nnext step:\r\n- add more explanatory text to draft about the fake response",
+      "createdAt": "2021-06-02T01:33:38Z",
+      "updatedAt": "2021-06-02T01:33:39Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "fc42616e4908d4ebfa94ca9ff3d93131f05479c6",
+      "headRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "headRefName": "dbz/fake-credentials",
+      "headRefOid": "8a95cdb4aeccfd0457503173aeb7a21776b2273e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 214,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjYwMzkwODI3",
+      "title": "Take #2 on fake credential test vectors",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/214",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "A couple open questions:\r\n\r\n1. Does this include everything one would need to verify that KE2 is generated correctly? That seems to be the only thing we actually need to test here. (I don't see much value in testing to make sure the client side, but maybe I'm missing something.)\r\n2. How much work will it be to verify vectors in your respective stacks, @bytemare and @kevinlewi?\r\n",
+      "createdAt": "2021-06-02T21:05:42Z",
+      "updatedAt": "2021-06-02T21:08:45Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "72ec450e9c4353e888f60497955f905f2ba3f251",
+      "headRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "headRefName": "caw/fake-creds",
+      "headRefOid": "a8116c55ae47128e96f315eca9789d794b1e3c44",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
