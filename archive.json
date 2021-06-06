@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-06-03T02:27:28.417593+00:00",
+  "timestamp": "2021-06-06T01:26:25.892609+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -16914,7 +16914,7 @@
       "labels": [],
       "body": "A couple open questions:\r\n\r\n1. Does this include everything one would need to verify that KE2 is generated correctly? That seems to be the only thing we actually need to test here. (I don't see much value in testing to make sure the client side, but maybe I'm missing something.)\r\n2. How much work will it be to verify vectors in your respective stacks, @bytemare and @kevinlewi?\r\n",
       "createdAt": "2021-06-02T21:05:42Z",
-      "updatedAt": "2021-06-02T21:08:45Z",
+      "updatedAt": "2021-06-05T13:18:36Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "72ec450e9c4353e888f60497955f905f2ba3f251",
