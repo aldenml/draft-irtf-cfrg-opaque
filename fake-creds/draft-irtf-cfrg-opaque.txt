@@ -5,12 +5,12 @@
 Network Working Group                                        H. Krawczyk
 Internet-Draft                                       Algorand Foundation
 Intended status: Informational                               D. Bourdrez
-Expires: 4 December 2021                                                
+Expires: 8 December 2021                                                
                                                                  K. Lewi
                                                            Novi Research
                                                                C.A. Wood
                                                               Cloudflare
-                                                             2 June 2021
+                                                             6 June 2021
 
 
                   The OPAQUE Asymmetric PAKE Protocol
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 4 December 2021.
+   This Internet-Draft will expire on 8 December 2021.
 
 Copyright Notice
 
@@ -3006,6 +3006,8 @@ C.9.2.  Input Values
    64cb1a3c600571dfd205
    blind_login: a701d1bfb8e4dad3011c184f101ae3629ba31e0354a31e81659218c1
    6be49602
+   fake_client_public_key: 56717b74a5e1770edb14c65f22cee0487046bd96e122b
+   a97daffed06c4bf4052
 
 C.9.3.  Intermediate Values
 
@@ -3088,6 +3090,8 @@ C.10.2.  Input Values
    7690371d527ddad59a64
    blind_login: 4a09ffafd1efd97b3b97c34cd2efade2a8f8ab8dcbe5785c96df26b4
    54d9bf78
+   fake_client_public_key: 037fe5b0efbad57e6ec507e2f348448a07d7580810bb3
+   4ddeb3c182050422870b5
 
 C.10.3.  Intermediate Values
 
@@ -3165,6 +3169,8 @@ C.11.2.  Input Values
    3e491a521f827fadbb01
    blind_login: f08abe3f366736c1ca6a58ac3acf5910a0c556e6daa4557272be8677
    22046b0e
+   fake_client_public_key: d06f59341a43ddf511adf88e1a3e6d42a125cf56cf9e5
+   4c5a45ff3cdb4c1a543
 
 C.11.3.  Intermediate Values
 
@@ -3249,6 +3255,8 @@ C.12.2.  Input Values
    201861a5d6794ac5e309
    blind_login: fc92cbe93d7598f0a592d17543ff54135254e30251f3b9245d902bb4
    b0c51019
+   fake_client_public_key: 0251a3c4e73402bf0e6da738c15b882d14c7ee8183f25
+   6c7d4b6db8d3c2158f4cf
 
 C.12.3.  Intermediate Values
 
