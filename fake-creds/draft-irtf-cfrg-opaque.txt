@@ -76,8 +76,8 @@ Table of Contents
      4.1.  Envelope Structure
      4.2.  Envelope Creation and Recovery
      4.3.  Envelope Modes
-       4.3.1.  Internal mode
-       4.3.2.  External mode
+       4.3.1.  Internal Mode
+       4.3.2.  External Mode
    5.  Offline Registration
      5.1.  Registration Messages
        5.1.1.  Registration Functions
@@ -91,20 +91,21 @@ Table of Contents
        6.2.3.  External Client API
        6.2.4.  External Server API
    7.  Configurations
-   8.  Security Considerations
-     8.1.  Related Analysis
-     8.2.  Identities
-     8.3.  Envelope Encryption
-     8.4.  Export Key Usage
-     8.5.  Static Diffie-Hellman Oracles
-     8.6.  Input Validation
-     8.7.  OPRF Hardening
-     8.8.  Preventing Client Enumeration
-     8.9.  Password Salt and Storage Implications
-   9.  IANA Considerations
-   10. References
-     10.1.  Normative References
-     10.2.  Informative References
+   8.  Application Considerations
+   9.  Security Considerations
+     9.1.  Related Analysis
+     9.2.  Identities
+     9.3.  Envelope Encryption
+     9.4.  Export Key Usage
+     9.5.  Static Diffie-Hellman Oracles
+     9.6.  Input Validation
+     9.7.  OPRF Hardening
+     9.8.  Preventing Client Enumeration
+     9.9.  Password Salt and Storage Implications
+   10. IANA Considerations
+   11. References
+     11.1.  Normative References
+     11.2.  Informative References
    Appendix A.  Acknowledgments
    Appendix B.  Alternate AKE Instantiations
      B.1.  HMQV Instantiation Sketch
@@ -235,7 +236,7 @@ Table of Contents
    functionalities: an oblivious pseudorandom function (OPRF) and an
    authenticated key exchange (AKE) protocol.  It can be seen as a
    "compiler" for transforming any suitable AKE protocol into a secure
-   aPAKE protocol.  (See Section 8 for requirements of the OPRF and AKE
+   aPAKE protocol.  (See Section 9 for requirements of the OPRF and AKE
    protocols.)  This document specifies one OPAQUE instantiation based
    on 3DH [SIGNAL].  Other instantiations are possible, as discussed in
    Appendix B, but their details are out of scope for this document.  In
@@ -492,7 +493,7 @@ Table of Contents
 
    *  server_identity: The server identity.  This is typically a domain
       name, e.g., example.com.  If not specified, it defaults to the
-      server's public key.  See Section 8.2 for information about this
+      server's public key.  See Section 9.2 for information about this
       identity.
 
    These credential values are used in the "CleartextCredentials"
@@ -657,11 +658,11 @@ Steps:
    respectively.
 
    The size of the envelope may vary between modes.  If applications
-   implement Section 8.8, they MUST use the same envelope mode
+   implement Section 9.8, they MUST use the same envelope mode
    throughout their lifecycle in order to avoid activity leaks due to
    mode switching.
 
-4.3.1.  Internal mode
+4.3.1.  Internal Mode
 
    In this mode, the client's private and public keys are
    deterministically derived from the OPRF output.
@@ -730,7 +731,7 @@ Steps:
    Note that implementations are free to leave out the "inner_env"
    parameter, as it is not used.
 
-4.3.2.  External mode
+4.3.2.  External Mode
 
    This mode allows applications to import or generate keys for the
    client.  This specification only imports the client's private key and
@@ -863,10 +864,10 @@ Steps:
    corresponding parameters referenced above.
 
    Both client and server MUST validate the other party's public key
-   before use.  See Section 8.6 for more details.  Upon completion, the
+   before use.  See Section 9.6 for more details.  Upon completion, the
    server stores the client's credentials for later use.  Moreover, the
    client MAY use the output "export_key" for further application-
-   specific purposes; see Section 8.4.
+   specific purposes; see Section 9.4.
 
 5.1.  Registration Messages
 
@@ -1003,7 +1004,9 @@ Steps:
    protocol is authenticated using the client and server credentials
    established during registration; see Section 5.  In the end, the
    client proves its knowledge of the password, and both client and
-   server agree on a mutually authenticated shared secret key.
+   server agree on (1) a mutually authenticated shared secret key and
+   (2) any optional application information exchange during the
+   handshake.
 
    In this stage, the client inputs the following values:
 
@@ -1028,9 +1031,9 @@ Steps:
 
    The client receives two outputs: a session secret and an export key.
    The export key is only available to the client, and may be used for
-   additional application-specific purposes, as outlined in Section 8.4.
+   additional application-specific purposes, as outlined in Section 9.4.
    The output "export_key" MUST NOT be used in any way before the
-   protocol completes successfully.  See Section 8.3 for more details
+   protocol completes successfully.  See Section 9.3 for more details
    about this requirement.  The server receives a single output: a
    session secret matching that of the client's.
 
@@ -1146,8 +1149,8 @@ Steps:
 7. Create CredentialResponse response with (Z, masking_nonce, masked_response)
 8. Output response
 
-   In the case of a record that does not exist, the server invokes the
-   CreateCredentialResponse function where the record argument is
+   In the case of a record that does not exist, the server SHOULD invoke
+   the CreateCredentialResponse function where the record argument is
    configured so that:
 
    *  record.client_public_key is set to a randomly generated public key
@@ -1197,7 +1200,7 @@ Steps:
 
    This section describes the authenticated key exchange protocol for
    OPAQUE using 3DH, a 3-message AKE which satisfies the forward secrecy
-   and KCI properties discussed in Section 8.  The protocol consists of
+   and KCI properties discussed in Section 9.  The protocol consists of
    three messages sent between client and server, each computed using
    the following application APIs:
 
@@ -1622,7 +1625,47 @@ Steps:
        produce a key for MAC of suitable length.  For example, if MAC is
        HMAC-SHA256, then "Nh" could be the 32 bytes.
 
-8.  Security Considerations
+8.  Application Considerations
+
+   Beyond choosing an appropriate configuration, there are several
+   parameters which applications can use to control OPAQUE:
+
+   *  Client credential identifier: As described in Section 5, this is a
+      unique handle to the client credential being stored.  In
+      applications where there are alternate client identifiers that
+      accompany an account, such as a username or email address, this
+      identifier can be set to those alternate values.  Applications
+      SHOULD set the credential identifier to the client identifier.
+      Applications MUST NOT use the same credential identifier for
+      multiple clients.
+
+   *  Context information: As described in Section 7, applications may
+      include a shared context string that is authenticated as part of
+      the handshake.  This parameter SHOULD include any configuration
+      information or parameters that are needed to prevent cross-
+      protocol or downgrade attacks.  This context information is not
+      sent over the wire in any key exchange messages.  However,
+      applications may choose to send it alongside key exchange messages
+      if needed for their use case.
+
+   *  Client and server identifier: As described in Section 4, clients
+      and servers are identified with their public keys by default.
+      However, applications may choose alternate identifiers that are
+      pinned to these public keys.  For example, servers may use a
+      domain name instead of a public key as their identifier.  Absent
+      alternate notions of an identity, applications SHOULD set these
+      identifiers to nil and rely solely on public key information.
+
+   *  Enumeration prevention: As described in Section 6.1.2.2, if
+      servers receive a credential request for a non-existent client,
+      they SHOULD respond with a "fake" response in order to prevent
+      active client enumeration attacks.  Servers that implement this
+      mitigation SHOULD use the same configuration information (such as
+      the oprf_seed) for all clients; see Section 9.8.  In settings
+      where this attack is not a concern, servers may choose to not
+      support this functionality.
+
+9.  Security Considerations
 
    OPAQUE is defined and proven as the composition of two
    functionalities: an OPRF and an AKE protocol.  It can be seen as a
@@ -1659,7 +1702,7 @@ Steps:
    protocols for use in OPAQUE is to provide forward secrecy (against
    active attackers).
 
-8.1.  Related Analysis
+9.1.  Related Analysis
 
    Jarecki et al.  [OPAQUE] proved the security of OPAQUE in a strong
    aPAKE model that ensures security against pre-computation attacks and
@@ -1687,7 +1730,7 @@ Steps:
    computation attacks or presented a proof of aPAKE security (not even
    in a weak model).
 
-8.2.  Identities
+9.2.  Identities
 
    AKE protocols generate keys that need to be uniquely and verifiably
    bound to a pair of identities.  In the case of OPAQUE, those
@@ -1733,7 +1776,7 @@ Steps:
    unspecified (and using client_public_key and server_public_key
    instead) is acceptable.
 
-8.3.  Envelope Encryption
+9.3.  Envelope Encryption
 
    The analysis of OPAQUE from [OPAQUE] requires the authenticated
    encryption scheme used to produce the envelope in the external mode
@@ -1748,7 +1791,7 @@ Steps:
    export_key is used only after the envelope is validated, i.e., after
    the MAC in RecoverCredentials passes verification.
 
-8.4.  Export Key Usage
+9.4.  Export Key Usage
 
    The export key can be used (separately from the OPAQUE protocol) to
    provide confidentiality and integrity to other data which only the
@@ -1757,7 +1800,7 @@ Steps:
    to access, then this export key can be used to encrypt these secrets
    so that they remain hidden from the server.
 
-8.5.  Static Diffie-Hellman Oracles
+9.5.  Static Diffie-Hellman Oracles
 
    While one can expect the practical security of the OPRF function
    (namely, the hardness of computing the function without knowing the
@@ -1770,7 +1813,7 @@ Steps:
    impractical as they translate into an infeasible number of failed
    authentication attempts directed at individual users.
 
-8.6.  Input Validation
+9.6.  Input Validation
 
    Both client and server MUST validate the other party's public key(s)
    used for the execution of OPAQUE.  This includes the keys shared
@@ -1784,57 +1827,65 @@ Steps:
    is not the point at infinity.  Additionally, validation MUST ensure
    the Diffie-Hellman shared secret is not the point at infinity.
 
-8.7.  OPRF Hardening
+9.7.  OPRF Hardening
 
    Hardening the output of the OPRF greatly increases the cost of an
    offline attack upon the compromise of the credential file at the
    server.  Applications SHOULD select parameters that balance cost and
    complexity.
 
-8.8.  Preventing Client Enumeration
+9.8.  Preventing Client Enumeration
 
    Client enumeration refers to attacks where the attacker tries to
    learn extra information about the behavior of clients that have
    registered with the server.  There are two types of attacks we
-   consider: 1) An attacker tries to learn whether a given client
-   identity is registered with a server, and 2) An attacker tries to
-   learn whether a given client identity has recently completed
-   registration, or has re-registered (e.g. after a password change).
+   consider:
 
-   Preventing the first type of attack requires the server to act with
-   unregistered client identities in a way that is indistinguishable
-   from its behavior with existing registered clients.  This is achieved
-   in Section 6.1.2.2 for an unregistered client by simulating a
-   CredentialResponse for unregistered clients through the sampling of a
-   random masking_key value and relying on the semantic security
-   provided by the XOR-based pad over the envelope.
+   1) An attacker tries to learn whether a given client identity is
+   registered with a server, and 2) An attacker tries to learn whether a
+   given client identity has recently completed registration, or has re-
+   registered (e.g. after a password change).
 
-   Implementations must employ care to avoid side-channel leakage (e.g.,
-   timing attacks) from helping differentiate these operations from a
-   regular server response.
+   OPAQUE prevents the first type of attack during the authentication
+   flow.  This is done by requiring servers to act with unregistered
+   client identities in a way that is indistinguishable from its
+   behavior with existing registered clients.  Servers do this for an
+   unregistered client by simulating a fake CredentialResponse as
+   specified in Section 6.1.2.2.  Implementations must also take care to
+   avoid side-channel leakage (e.g., timing attacks) from helping
+   differentiate these operations from a regular server response.  Note
+   that server implementations may choose to forego the construction of
+   a simulated credential response message for an unregistered client if
+   these client enumeration attacks can be mitigated through other
+   application-specific means or are otherwise not applicable for their
+   threat model.
+
+   OPAQUE does not prevent the first type of attack during the
+   registration flow.  Servers must necessarily react differently during
+   the registration flow between registered and unregistered clients.
+   This allows an attacker to use the server's response during
+   registration as an oracle for whether a given client identity is
+   registered.  Applications should mitigate against this type of attack
+   by rate limiting or otherwise restricting the registration flow.
 
    Preventing the second type of attack requires the server to supply a
    credential_identifier value for a given client identity, consistently
-   between the Section 5.1.1.2 and Section 6.1.2.2 steps.  Note that
-   credential_identifier can be set to client_identity, for simplicity.
+   between the registration response and credential response; see
+   Section 5.1.1.2 and Section 6.1.2.2.  Note that credential_identifier
+   can be set to client_identity for simplicity.
 
    In the event of a server compromise that results in a re-registration
-   of credentials for all compromised clients, the oprf_seed value must
+   of credentials for all compromised clients, the oprf_seed value MUST
    be resampled, resulting in a change in the oprf_key value for each
    client.  Although this change can be detected by an adversary, it is
    only leaked upon password rotation after the exposure of the
-   credential files.
+   credential files, and equally affects all registered clients.
 
-   Applications must use the same envelope mode when using this
-   prevention throughout their lifecycle.  The envelope size varies from
-   one to another, and a switch in envelope mode could then be detected.
+   Finally, applications must use the same envelope mode when using this
+   prevention throughout their lifecycle.  The envelope size varies
+   between modes, so a switch in mode could then be detected.
 
-   Finally, note that server implementations may choose to forego the
-   construction of a simulated credential response message for an
-   unregistered client if these client enumeration attacks can be
-   mitigated through other application-specific means.
-
-8.9.  Password Salt and Storage Implications
+9.9.  Password Salt and Storage Implications
 
    In OPAQUE, the OPRF key acts as the secret salt value that ensures
    the infeasibility of pre-computation attacks.  No extra salt value is
@@ -1853,13 +1904,13 @@ Steps:
    the server are possible to implement, e.g., detecting repeated
    passwords.
 
-9.  IANA Considerations
+10.  IANA Considerations
 
    This document makes no IANA requests.
 
-10.  References
+11.  References
 
-10.1.  Normative References
+11.1.  Normative References
 
    [I-D.irtf-cfrg-voprf]
               Davidson, A., Faz-Hernandez, A., Sullivan, N., and C. A.
@@ -1888,7 +1939,7 @@ Steps:
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://datatracker.ietf.org/doc/html/rfc8174>.
 
-10.2.  Informative References
+11.2.  Informative References
 
    [AuCPace]  Haase, B. and B. Labrique, "AuCPace: Efficient verifier-
               based PAKE protocol tailored for the IIoT",
@@ -2017,7 +2068,7 @@ Appendix B.  Alternate AKE Instantiations
 
    OPAQUE may also be instantiated with any post-quantum (PQ) AKE
    protocol that has the message flow above and security properties (KCI
-   resistance and forward secrecy) outlined in Section 8.  Note that
+   resistance and forward secrecy) outlined in Section 9.  Note that
    such an instantiation is not quantum-safe unless the OPRF is quantum-
    safe.  However, an OPAQUE instantiation where the AKE is quantum-
    safe, but the OPRF is not, would still ensure the confidentiality of
@@ -3006,8 +3057,6 @@ C.9.2.  Input Values
    64cb1a3c600571dfd205
    blind_login: a701d1bfb8e4dad3011c184f101ae3629ba31e0354a31e81659218c1
    6be49602
-   fake_client_public_key: 56717b74a5e1770edb14c65f22cee0487046bd96e122b
-   a97daffed06c4bf4052
 
 C.9.3.  Intermediate Values
 
@@ -3090,8 +3139,6 @@ C.10.2.  Input Values
    7690371d527ddad59a64
    blind_login: 4a09ffafd1efd97b3b97c34cd2efade2a8f8ab8dcbe5785c96df26b4
    54d9bf78
-   fake_client_public_key: 037fe5b0efbad57e6ec507e2f348448a07d7580810bb3
-   4ddeb3c182050422870b5
 
 C.10.3.  Intermediate Values
 
@@ -3169,8 +3216,6 @@ C.11.2.  Input Values
    3e491a521f827fadbb01
    blind_login: f08abe3f366736c1ca6a58ac3acf5910a0c556e6daa4557272be8677
    22046b0e
-   fake_client_public_key: d06f59341a43ddf511adf88e1a3e6d42a125cf56cf9e5
-   4c5a45ff3cdb4c1a543
 
 C.11.3.  Intermediate Values
 
@@ -3255,8 +3300,6 @@ C.12.2.  Input Values
    201861a5d6794ac5e309
    blind_login: fc92cbe93d7598f0a592d17543ff54135254e30251f3b9245d902bb4
    b0c51019
-   fake_client_public_key: 0251a3c4e73402bf0e6da738c15b882d14c7ee8183f25
-   6c7d4b6db8d3c2158f4cf
 
 C.12.3.  Intermediate Values
 
