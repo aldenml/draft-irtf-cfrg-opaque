@@ -1498,24 +1498,24 @@ Steps:
     client_identity, record.client_public_key, ke1, response)
 3. Output ke2
 
-ServerFinish(ke3)
+   ServerFinish(ke3)
 
-State:
-- state, a ServerState structure.
+   State:
+   - state, a ServerState structure.
 
-Input:
-- ke3, a KE3 structure.
+   Input:
+   - ke3, a KE3 structure.
 
-Output:
-- session_key, the shared session secret if, and only if, KE3 is valid, nil otherwise.
+   Output:
+   - session_key, the shared session secret if and only if KE3 is valid.
 
-Exceptions:
-- HandshakeError, when the handshake fails
+   Exceptions:
+   - HandshakeError, when the handshake fails
 
-Steps:
-1. if !ct_equal(ke3.client_mac, state.expected_client_mac):
-2.    raise HandshakeError
-3. Output state.session_key
+   Steps:
+   1. if !ct_equal(ke3.client_mac, state.expected_client_mac):
+   2.    raise HandshakeError
+   3. Output state.session_key
 
 6.2.4.1.  Internal Server Functions
 
