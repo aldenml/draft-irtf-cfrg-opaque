@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-06-06T01:26:25.892609+00:00",
+  "timestamp": "2021-06-08T01:25:45.966887+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -4471,7 +4471,7 @@
       "id": "MDU6SXNzdWU4MzA4MDAzMzY=",
       "title": "3DH and X3DH",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/163",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "claucece",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
@@ -4480,8 +4480,8 @@
       ],
       "body": "Apologies if this has already been discussed or if it does not take into account security considerations already discussed.\r\n\r\nThe document describes that it is using 3DH as defined by Signal. However, this might not be completely accurate as Signal uses X3DH (as described here: https://signal.org/docs/specifications/x3dh/); even though, at the beginning, they were indeed using 3DH, as described here: https://signal.org/blog/simplifying-otr-deniability/ . So maybe there is a place to change that reference in the document.\r\n\r\nThe reason why Signal moved from 3DH to X3DH are many, but one of them is due to an attack on forward secrecy as provided by 3DH: an active adversary modifies the first flow from the Initiator to use an adversarially controlled ephemeral key, captures and drops the response from the Receiver, and then compromises the Initiator\u2019s long-term secret key. This attack requires a powerful adversary. This is also addressed in the specification itself (https://signal.org/docs/specifications/x3dh/ , section 4.5) and by the paper: https://content.sciendo.com/downloadpdf/journals/popets/2018/1/article-p21.xml\r\n\r\nSignal\u2019s X3DH protocol somewhat mitigates this attack by using signed prekeys. \r\n\r\nI haven't have the time to analyse this attack in the specific context of OPAQUE; but it could be that this has already been taken into account.\r\n\r\ncc./ @chris-wood ",
       "createdAt": "2021-03-13T04:10:42Z",
-      "updatedAt": "2021-05-27T14:00:14Z",
-      "closedAt": null,
+      "updatedAt": "2021-06-07T21:25:15Z",
+      "closedAt": "2021-06-07T21:25:15Z",
       "comments": [
         {
           "author": "jhoyla",
@@ -4545,6 +4545,13 @@
           "body": "Yes! sorry about that. Thank you for reminding me. I'll send today, as I'm re-reading the draft ;)",
           "createdAt": "2021-05-27T14:00:14Z",
           "updatedAt": "2021-05-27T14:00:14Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #216.",
+          "createdAt": "2021-06-07T21:25:15Z",
+          "updatedAt": "2021-06-07T21:25:15Z"
         }
       ]
     },
@@ -5074,6 +5081,79 @@
       "body": "Currently, OPAQUE has support [1] for preventing user enumeration during online _authentication_. It does not, however, prevent an attacker from using the offline _registration_ flow. (This was somewhat touched in #22.) \r\n\r\nThis raises an important question: is the complexity of the enumeration attack prevention and mitigation useful given that the registration flow may already be exploited to learn this same information? \r\n\r\n@kevinlewi points out that the registration flow may have different restrictions in terms of who can trigger it. For example:\r\n\r\n- Registration may be done once during some offline \u201cbootstrap\u201d or configuration step, thereby removing any registration oracle entirely. \r\n- Registration flows may be rate limited or otherwise restricted to attackers, in contrast to the authentication flow which may not have such restrictions. \r\n\r\nIn general, this seems to boil down the use case. I don\u2019t have enough experience with asymmetric PAKE applications to know how registration typically works. I hope we can use this issue to track the question above. \r\n\r\n[1] Assuming that servers construct fake CredentialResponse values without obvious side channels when a user does not exist.",
       "createdAt": "2021-05-24T20:43:19Z",
       "updatedAt": "2021-05-24T20:43:19Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 215,
+      "id": "MDU6SXNzdWU5MTI4NTUzNjY=",
+      "title": "User enumeration exploiting the OPRF key consistency for a given client",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/215",
+      "state": "OPEN",
+      "author": "bytemare",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The very nature of the OPRF needs the server's input to be constant so that the client can deterministically derive their key material. With a fixed, global oprf_seed, used for all clients, the credential_identifier must then be static for a given client. This is also important in the context of the client enumeration mitigation.\r\n\r\nThis opens the current mechanism to the following attacks.\r\n\r\n___\r\n\r\n**1. Default behavior for non-existing clients**\r\n\r\nFor a non-registered client_id an incoming request demands the credentials for, the server must be able to use the same credential_identifier as when a legitimate client is registered for the requested client_id. If not, an attacker could fingerprint the OPRF key used in the evaluation using the same password, and detect an update on that client record.\r\n\r\n**Attack**\r\nThe attacker sends a credential_request without a client_id. If the server chooses to respond with a fake credential_response using a default credential_identifier, the attacker can register the evaluation for their OPRF input.\r\n\r\nThe attacker then sends credential_requests with the same OPRF input but with a (or multiple) client_id. If the client_id is not recognized by the server and it decides to respond with a fake credential_response using a default credential_identifier, it will yield the same evaluation then before, and the attacker knows the client_id is not registered. If the server recognizes it, and thus uses a different credential_identifier, then the evaluation is different, and the attacker then learns that something happened (either the client_id has been registered, or the default value has changed).\r\n\r\n**Solution**\r\n> Fortunately, trivial mitigation to this is that the server MUST NOT engage in the protocol if it can't determine a unique client_id<>credential_identifier mapping, which also seems a very natural to go.\r\n\r\n___\r\n\r\n**2. Update of existing client_id**\r\n\r\nIf credential_identifier = client_id = email or username, and the user wants to change their email or username, the OPRF key would change.\r\n\r\n**Attack**\r\nAn attacker who possesses two probes with different evaluations detects an update has happened, i.e. user activity.\r\n\r\n**Solution**\r\n> None, yet. Open to suggestions.\r\n",
+      "createdAt": "2021-06-06T14:59:27Z",
+      "updatedAt": "2021-06-08T00:40:28Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "kevinlewi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Regarding: 2. Update of existing client_id\r\n\r\nWhy can't the server just begin by setting credential_identifier = Hash(client_id = email or username) *initially* (let's say this hash output is 0x67af32), and then when the user wants to change their email or username, they can do so, but the credential_identifier would stay the same, by having the server store a mapping between 0x67af32 and the new username?\r\n\r\nDoesn't this seem to resolve all issues?",
+          "createdAt": "2021-06-07T17:58:53Z",
+          "updatedAt": "2021-06-07T17:58:53Z"
+        },
+        {
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'm thinking about the following scenario\r\n\r\n1. Attacker tries \"user123\" -> server doesn't know \"user123\" -> uses hash(\"user123\") as credential_identifier -> attacker fingerprints it\r\n2. A legitimate user registers under \"user456\" -> server registers hash(\"user456\") as cred_id\r\n3. User wants to change id \"user456\" for \"user123\", which is not registered. The server needs to map the client_id \"user123\" to the credential_identifier hash(\"user456\"), if we don't want to leak activity about \"user456\". But that now leaks activity about \"user123\".\r\n4. A motivated attacker indexed a billion of client_ids, and can detect if an update matches a known result and see activity",
+          "createdAt": "2021-06-08T00:40:28Z",
+          "updatedAt": "2021-06-08T00:40:28Z"
+        }
+      ]
+    },
+    {
+      "number": 217,
+      "id": "MDU6SXNzdWU5MTM5NjYxMzg=",
+      "title": "Should `G` or `MacError` be clarified?",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/217",
+      "state": "CLOSED",
+      "author": "claucece",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "As far as I see, `MacError` is not properly defined. While I understand what it refers to, it might be good to define it for someone that might get confused.\r\n\r\nOn line 679, also, on the `DeriveAuthKeyPair`:\r\n\r\n```\r\n2. public_key = private_key * G\r\n```\r\nthe value `G` is not defined elsewhere, which might be confusing for a casual reader.. should it be better defined?\r\n",
+      "createdAt": "2021-06-07T21:24:19Z",
+      "updatedAt": "2021-06-07T22:32:02Z",
+      "closedAt": "2021-06-07T22:32:02Z",
+      "comments": [
+        {
+          "author": "claucece",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "cc./ @chris-wood ",
+          "createdAt": "2021-06-07T21:24:28Z",
+          "updatedAt": "2021-06-07T21:24:28Z"
+        }
+      ]
+    },
+    {
+      "number": 219,
+      "id": "MDU6SXNzdWU5MTQwNTc1MzE=",
+      "title": "Give constant-time trick in current user enumeration mitigation scheme",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/219",
+      "state": "OPEN",
+      "author": "bytemare",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "To ensure a constant time \"fake\" response by the server, two solutions are suggested\r\n\r\n- the server decides on a seed at setup, and deterministically generates a public key at each fake response to use in a fake client record. The server remembers the seed.\r\n- the server generates a public key that it will use in each fake response. The server remembers that public key.",
+      "createdAt": "2021-06-07T23:47:11Z",
+      "updatedAt": "2021-06-07T23:47:11Z",
       "closedAt": null,
       "comments": []
     }
@@ -16877,7 +16957,7 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NjU5NTg4MzI3",
       "title": "Implement fake credentials response",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/213",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bytemare",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -16888,18 +16968,26 @@
       ],
       "body": "Addresses #166 \r\n\r\nA global fake record is created, that should be used in place of a legitimate one:\r\n- envelope data is all 0 bytes\r\n- a fake client public key is generated to serve for the AKE\r\n- a random fake masking key is used\r\n\r\nApplication consideration for #199 \r\n- server must not evaluate oprf on nil or empty user id and must abort\r\n\r\nnext step:\r\n- add more explanatory text to draft about the fake response",
       "createdAt": "2021-06-02T01:33:38Z",
-      "updatedAt": "2021-06-02T01:33:39Z",
+      "updatedAt": "2021-06-06T12:37:58Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "fc42616e4908d4ebfa94ca9ff3d93131f05479c6",
       "headRepository": "cfrg/draft-irtf-cfrg-opaque",
       "headRefName": "dbz/fake-credentials",
       "headRefOid": "8a95cdb4aeccfd0457503173aeb7a21776b2273e",
-      "closedAt": null,
+      "closedAt": "2021-06-06T12:37:58Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing in favor of #214 ",
+          "createdAt": "2021-06-06T12:37:58Z",
+          "updatedAt": "2021-06-06T12:37:58Z"
+        }
+      ],
       "reviews": []
     },
     {
@@ -16914,19 +17002,246 @@
       "labels": [],
       "body": "A couple open questions:\r\n\r\n1. Does this include everything one would need to verify that KE2 is generated correctly? That seems to be the only thing we actually need to test here. (I don't see much value in testing to make sure the client side, but maybe I'm missing something.)\r\n2. How much work will it be to verify vectors in your respective stacks, @bytemare and @kevinlewi?\r\n",
       "createdAt": "2021-06-02T21:05:42Z",
-      "updatedAt": "2021-06-05T13:18:36Z",
+      "updatedAt": "2021-06-06T15:41:10Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "72ec450e9c4353e888f60497955f905f2ba3f251",
       "headRepository": "cfrg/draft-irtf-cfrg-opaque",
       "headRefName": "caw/fake-creds",
-      "headRefOid": "a8116c55ae47128e96f315eca9789d794b1e3c44",
+      "headRefOid": "136cbcaec84148f0f8fcf86c9c1d58819acfa607",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "body": "1. Since we need to fake a client record, and the envelope is set to 0s, there must be a fake client public key, atop the client identifier and KE2 in the vectors. I added a commit to patch that.\r\n2. Now they work :)",
+          "createdAt": "2021-06-06T13:26:47Z",
+          "updatedAt": "2021-06-06T13:26:47Z"
+        }
+      ],
       "reviews": []
+    },
+    {
+      "number": 216,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjYzOTE3NzQw",
+      "title": "Add correct reference to 3DH and editorial changes",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/216",
+      "state": "MERGED",
+      "author": "claucece",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-06-07T21:15:26Z",
+      "updatedAt": "2021-06-07T21:24:59Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "72ec450e9c4353e888f60497955f905f2ba3f251",
+      "headRepository": "claucece/draft-irtf-cfrg-opaque",
+      "headRefName": "master",
+      "headRefOid": "468ed6eee5554272e39b45c6c40154e608c72d4f",
+      "closedAt": "2021-06-07T21:24:59Z",
+      "mergedAt": "2021-06-07T21:24:58Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "f59849c625a4eb12ad607476b022700f84a10be9"
+      },
+      "comments": [
+        {
+          "author": "claucece",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "cc./ @chris-wood ",
+          "createdAt": "2021-06-07T21:15:38Z",
+          "updatedAt": "2021-06-07T21:15:38Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "LGTM pending one revert -- thanks!",
+          "createdAt": "2021-06-07T21:17:31Z",
+          "updatedAt": "2021-06-07T21:17:31Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njc3ODkyNDgy",
+          "commit": {
+            "abbreviatedOid": "76dbf20"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-06-07T21:16:31Z",
+          "updatedAt": "2021-06-07T21:17:07Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "We wrote this intentionally as randomize as that does not assume additive or multiplicative blinding -- can we please revert?",
+              "createdAt": "2021-06-07T21:16:31Z",
+              "updatedAt": "2021-06-07T21:17:07Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njc3ODk1Nzc2",
+          "commit": {
+            "abbreviatedOid": "468ed6e"
+          },
+          "author": "claucece",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-06-07T21:21:33Z",
+          "updatedAt": "2021-06-07T21:21:33Z",
+          "comments": [
+            {
+              "originalPosition": 18,
+              "body": "Done ;)",
+              "createdAt": "2021-06-07T21:21:33Z",
+              "updatedAt": "2021-06-07T21:21:33Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njc3ODk3OTcz",
+          "commit": {
+            "abbreviatedOid": "468ed6e"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-06-07T21:24:54Z",
+          "updatedAt": "2021-06-07T21:24:54Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 218,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjYzOTM1MzEy",
+      "title": "Fix some errors. Clarify undefined things.",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/218",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #217.",
+      "createdAt": "2021-06-07T21:45:57Z",
+      "updatedAt": "2021-06-07T22:43:51Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "f59849c625a4eb12ad607476b022700f84a10be9",
+      "headRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "headRefName": "caw/clarify-things",
+      "headRefOid": "5d52847afaf20f95e44c486d807cf6b6e0355f73",
+      "closedAt": "2021-06-07T22:32:02Z",
+      "mergedAt": "2021-06-07T22:32:02Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "4b5ad4c8ae3163969bff1eebe6786c379075a0db"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njc3OTE5NjAx",
+          "commit": {
+            "abbreviatedOid": "d6de9f0"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-06-07T21:53:23Z",
+          "updatedAt": "2021-06-07T21:53:24Z",
+          "comments": [
+            {
+              "originalPosition": 76,
+              "body": "```suggestion\r\n- session_key, the shared session secret if and only if KE3 is valid.\r\n```",
+              "createdAt": "2021-06-07T21:53:23Z",
+              "updatedAt": "2021-06-07T21:53:24Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njc3OTE5OTY1",
+          "commit": {
+            "abbreviatedOid": "d6de9f0"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-06-07T21:54:02Z",
+          "updatedAt": "2021-06-07T21:54:02Z",
+          "comments": [
+            {
+              "originalPosition": 87,
+              "body": "This change makes the client and server interfaces different: both either return something, or toss an exception.",
+              "createdAt": "2021-06-07T21:54:02Z",
+              "updatedAt": "2021-06-07T21:54:02Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njc3OTM5OTA0",
+          "commit": {
+            "abbreviatedOid": "5d52847"
+          },
+          "author": "kevinlewi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Great changes!",
+          "createdAt": "2021-06-07T22:31:18Z",
+          "updatedAt": "2021-06-07T22:31:18Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njc3OTQxMzg2",
+          "commit": {
+            "abbreviatedOid": "5d52847"
+          },
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-06-07T22:34:30Z",
+          "updatedAt": "2021-06-07T22:34:30Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "`ScalarBaseMult` is not defined in this document, if I'm not mistaken",
+              "createdAt": "2021-06-07T22:34:30Z",
+              "updatedAt": "2021-06-07T22:34:30Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njc3OTQ1NzM4",
+          "commit": {
+            "abbreviatedOid": "5d52847"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-06-07T22:43:51Z",
+          "updatedAt": "2021-06-07T22:43:51Z",
+          "comments": [
+            {
+              "originalPosition": 42,
+              "body": "It's in the VOPRF document, Section 2.1 (see the citation added in this PR, which also covers where HashToScalar is introduced.)",
+              "createdAt": "2021-06-07T22:43:51Z",
+              "updatedAt": "2021-06-07T22:43:51Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
