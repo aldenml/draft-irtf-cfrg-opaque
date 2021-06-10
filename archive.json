@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-06-08T01:25:45.966887+00:00",
+  "timestamp": "2021-06-10T01:02:42.186107+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -5096,7 +5096,7 @@
       "labels": [],
       "body": "The very nature of the OPRF needs the server's input to be constant so that the client can deterministically derive their key material. With a fixed, global oprf_seed, used for all clients, the credential_identifier must then be static for a given client. This is also important in the context of the client enumeration mitigation.\r\n\r\nThis opens the current mechanism to the following attacks.\r\n\r\n___\r\n\r\n**1. Default behavior for non-existing clients**\r\n\r\nFor a non-registered client_id an incoming request demands the credentials for, the server must be able to use the same credential_identifier as when a legitimate client is registered for the requested client_id. If not, an attacker could fingerprint the OPRF key used in the evaluation using the same password, and detect an update on that client record.\r\n\r\n**Attack**\r\nThe attacker sends a credential_request without a client_id. If the server chooses to respond with a fake credential_response using a default credential_identifier, the attacker can register the evaluation for their OPRF input.\r\n\r\nThe attacker then sends credential_requests with the same OPRF input but with a (or multiple) client_id. If the client_id is not recognized by the server and it decides to respond with a fake credential_response using a default credential_identifier, it will yield the same evaluation then before, and the attacker knows the client_id is not registered. If the server recognizes it, and thus uses a different credential_identifier, then the evaluation is different, and the attacker then learns that something happened (either the client_id has been registered, or the default value has changed).\r\n\r\n**Solution**\r\n> Fortunately, trivial mitigation to this is that the server MUST NOT engage in the protocol if it can't determine a unique client_id<>credential_identifier mapping, which also seems a very natural to go.\r\n\r\n___\r\n\r\n**2. Update of existing client_id**\r\n\r\nIf credential_identifier = client_id = email or username, and the user wants to change their email or username, the OPRF key would change.\r\n\r\n**Attack**\r\nAn attacker who possesses two probes with different evaluations detects an update has happened, i.e. user activity.\r\n\r\n**Solution**\r\n> None, yet. Open to suggestions.\r\n",
       "createdAt": "2021-06-06T14:59:27Z",
-      "updatedAt": "2021-06-08T00:40:28Z",
+      "updatedAt": "2021-06-09T22:19:40Z",
       "closedAt": null,
       "comments": [
         {
@@ -5112,6 +5112,34 @@
           "body": "I'm thinking about the following scenario\r\n\r\n1. Attacker tries \"user123\" -> server doesn't know \"user123\" -> uses hash(\"user123\") as credential_identifier -> attacker fingerprints it\r\n2. A legitimate user registers under \"user456\" -> server registers hash(\"user456\") as cred_id\r\n3. User wants to change id \"user456\" for \"user123\", which is not registered. The server needs to map the client_id \"user123\" to the credential_identifier hash(\"user456\"), if we don't want to leak activity about \"user456\". But that now leaks activity about \"user123\".\r\n4. A motivated attacker indexed a billion of client_ids, and can detect if an update matches a known result and see activity",
           "createdAt": "2021-06-08T00:40:28Z",
           "updatedAt": "2021-06-08T00:40:28Z"
+        },
+        {
+          "author": "kevinlewi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I see, thanks for highlighting this.\r\n\r\nOverall, I have the feeling that we don't have a good way of completely eliminating all side-channel attacks when it comes to trying to obfuscate the leakage surrounding registration / password change / username change for OPAQUE.\r\n\r\nThe OPRF trick with the fake credential response does come close, but still leads open the possibilities for other kinds of client enumeration attacks. And I am a bit hesitant to keep introducing more and more patches to address these kinds of attacks if they do not completely solve the issue, since they come at the cost of increased spec complexity.\r\n\r\n@hugokraw : Any thoughts on if the above attack can be addressed? Or perhaps we can just resign to asserting that we cannot fully protect against client enumeration side channels with OPAQUE?",
+          "createdAt": "2021-06-08T02:46:04Z",
+          "updatedAt": "2021-06-08T02:46:04Z"
+        },
+        {
+          "author": "stef",
+          "authorAssociation": "NONE",
+          "body": "i don't think changing usernames is a thing anywhere. and even if someone wants to change their username it is a matter of registering a new user.",
+          "createdAt": "2021-06-08T11:38:19Z",
+          "updatedAt": "2021-06-08T11:38:19Z"
+        },
+        {
+          "author": "hugokraw",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree with Stef, this _looks_ as a corner case and it can be addressed as if it was a new user registration.  The fact that the defenses against user enumerations do not cover corner cases is not a reason to deny this protection in much more damaging cases. ",
+          "createdAt": "2021-06-08T16:52:15Z",
+          "updatedAt": "2021-06-08T16:52:15Z"
+        },
+        {
+          "author": "kevinlewi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@hugokraw , @stef : Thanks for the comments. It sounds like we should opt to keep the existing mitigations for the \"fake CredentialResponse\" (using a separate OPRF) in place, while not focusing too hard on the attacks that @bytemare described above.",
+          "createdAt": "2021-06-09T22:19:40Z",
+          "updatedAt": "2021-06-09T22:19:40Z"
         }
       ]
     },
@@ -17002,7 +17030,7 @@
       "labels": [],
       "body": "A couple open questions:\r\n\r\n1. Does this include everything one would need to verify that KE2 is generated correctly? That seems to be the only thing we actually need to test here. (I don't see much value in testing to make sure the client side, but maybe I'm missing something.)\r\n2. How much work will it be to verify vectors in your respective stacks, @bytemare and @kevinlewi?\r\n",
       "createdAt": "2021-06-02T21:05:42Z",
-      "updatedAt": "2021-06-06T15:41:10Z",
+      "updatedAt": "2021-06-09T12:08:31Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "72ec450e9c4353e888f60497955f905f2ba3f251",
@@ -17022,7 +17050,48 @@
           "updatedAt": "2021-06-06T13:26:47Z"
         }
       ],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njc5MTIyNjc3",
+          "commit": {
+            "abbreviatedOid": "136cbca"
+          },
+          "author": "kevinlewi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-06-09T01:00:54Z",
+          "updatedAt": "2021-06-09T01:00:55Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Suggestion: change to \"IsFake\"?",
+              "createdAt": "2021-06-09T01:00:54Z",
+              "updatedAt": "2021-06-09T01:00:55Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njc5NTY2NDc0",
+          "commit": {
+            "abbreviatedOid": "136cbca"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-06-09T12:08:30Z",
+          "updatedAt": "2021-06-09T12:08:31Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Alternate proposal: move these vectors to a separate appendix in the doc, so they're not mixed with the real vectors. Would that make it more clear?",
+              "createdAt": "2021-06-09T12:08:30Z",
+              "updatedAt": "2021-06-09T12:08:31Z"
+            }
+          ]
+        }
+      ]
     },
     {
       "number": 216,
