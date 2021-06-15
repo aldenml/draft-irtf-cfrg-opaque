@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-06-13T00:58:51.479357+00:00",
+  "timestamp": "2021-06-15T00:59:28.594198+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -5184,6 +5184,46 @@
       "updatedAt": "2021-06-07T23:47:11Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 220,
+      "id": "MDU6SXNzdWU5MjA3MTUwMzI=",
+      "title": "Questions around `oprf_key` and `oprf_seed`",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/220",
+      "state": "OPEN",
+      "author": "claucece",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Apologies if this has already been asked or discussed somewhere else ;)\r\n\r\nAround `oprf_key`:\r\n\r\nIn the `CreateRegistrationResponse` function, an `oprf_key` is derived and presumably stored (even though what is noted is that the `oprf_seed` is the one stored, as the `oprf_key` is derived from it with other params per client). If it is not stored in the server per client, what is the purpose of it being an output of the `CreateRegistrationResponse` if it will be generated each time that is needed? If it should be stored in the server per client, perhaps this needs to be noted in the document. \r\n\r\nAround `oprf_seed`:\r\n\r\nThe `oprf_seed` is defined as:\r\n\r\n`oprf_seed, the server-side seed of Nh bytes used to generate an oprf_key.`\r\n\r\nThis might be read as if there is a client-side seed and a server-side one. Maybe it should only be noted that this is the randomly generated seed used by the server?",
+      "createdAt": "2021-06-14T19:36:29Z",
+      "updatedAt": "2021-06-14T19:36:29Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 221,
+      "id": "MDU6SXNzdWU5MjA3MTcyMzU=",
+      "title": "Comment around encrypted credentials text",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/221",
+      "state": "OPEN",
+      "author": "claucece",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The description of OPAQUE reads:\r\n\r\n```\r\nOPAQUE consists of two stages: registration and authenticated key exchange. In the first stage, a client registers its password with the server and stores its encrypted credentials on the server.\r\n```\r\n\r\nI really like this description but it might not be completely accurate as, as far as I understand, in the Internal mode, no encrypted credentials are stored, as the the client's private and public keys are deterministically derived from the OPRF output. Might be good to note that if what I'm saying is indeed correct ;)\r\n\r\n ",
+      "createdAt": "2021-06-14T19:39:50Z",
+      "updatedAt": "2021-06-14T22:03:05Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "No encrypted private key is stored, but the user's envelope is still stored, so this seems accurate as-is.",
+          "createdAt": "2021-06-14T22:03:05Z",
+          "updatedAt": "2021-06-14T22:03:05Z"
+        }
+      ]
     }
   ],
   "pulls": [
