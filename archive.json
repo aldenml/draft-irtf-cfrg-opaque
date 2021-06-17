@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-06-15T00:59:28.594198+00:00",
+  "timestamp": "2021-06-17T00:54:58.209572+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -5197,9 +5197,24 @@
       "labels": [],
       "body": "Apologies if this has already been asked or discussed somewhere else ;)\r\n\r\nAround `oprf_key`:\r\n\r\nIn the `CreateRegistrationResponse` function, an `oprf_key` is derived and presumably stored (even though what is noted is that the `oprf_seed` is the one stored, as the `oprf_key` is derived from it with other params per client). If it is not stored in the server per client, what is the purpose of it being an output of the `CreateRegistrationResponse` if it will be generated each time that is needed? If it should be stored in the server per client, perhaps this needs to be noted in the document. \r\n\r\nAround `oprf_seed`:\r\n\r\nThe `oprf_seed` is defined as:\r\n\r\n`oprf_seed, the server-side seed of Nh bytes used to generate an oprf_key.`\r\n\r\nThis might be read as if there is a client-side seed and a server-side one. Maybe it should only be noted that this is the randomly generated seed used by the server?",
       "createdAt": "2021-06-14T19:36:29Z",
-      "updatedAt": "2021-06-14T19:36:29Z",
+      "updatedAt": "2021-06-15T12:42:09Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Totally accurate, well spotted!\nI believe this is something that survived the rewrites. One could argue that returning that value could be used for debugging, but I'm totally in favor of dropping it in the model of key derivation from a seed.",
+          "createdAt": "2021-06-15T06:18:07Z",
+          "updatedAt": "2021-06-15T06:18:07Z"
+        },
+        {
+          "author": "claucece",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@bytemare I think it could be also argued that the server can store the `oprf_key` to not perform this computation each time that is needed. Maybe the best is to give the option to store or not..",
+          "createdAt": "2021-06-15T12:42:09Z",
+          "updatedAt": "2021-06-15T12:42:09Z"
+        }
+      ]
     },
     {
       "number": 221,
@@ -5213,7 +5228,7 @@
       "labels": [],
       "body": "The description of OPAQUE reads:\r\n\r\n```\r\nOPAQUE consists of two stages: registration and authenticated key exchange. In the first stage, a client registers its password with the server and stores its encrypted credentials on the server.\r\n```\r\n\r\nI really like this description but it might not be completely accurate as, as far as I understand, in the Internal mode, no encrypted credentials are stored, as the the client's private and public keys are deterministically derived from the OPRF output. Might be good to note that if what I'm saying is indeed correct ;)\r\n\r\n ",
       "createdAt": "2021-06-14T19:39:50Z",
-      "updatedAt": "2021-06-14T22:03:05Z",
+      "updatedAt": "2021-06-15T12:50:11Z",
       "closedAt": null,
       "comments": [
         {
@@ -5222,6 +5237,27 @@
           "body": "No encrypted private key is stored, but the user's envelope is still stored, so this seems accurate as-is.",
           "createdAt": "2021-06-14T22:03:05Z",
           "updatedAt": "2021-06-14T22:03:05Z"
+        },
+        {
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I understand that the word \"encrypted\" seems not relevant in the context of the internal mode. Do you have a suggestion for the wording @claucece ?",
+          "createdAt": "2021-06-15T06:14:04Z",
+          "updatedAt": "2021-06-15T06:14:04Z"
+        },
+        {
+          "author": "claucece",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@chris-wood yes. The only thing that is stored from the client, I guess, in the end, is the `client_identity`; which is really nice as one can argue that in the internal OPAQUE mode the server only has the id of the client and nothing beyond that.\r\n\r\n@bytemare I can try to create a PR for it. Maybe after IETF? Don't want to push this with the meeting so soon...",
+          "createdAt": "2021-06-15T12:40:05Z",
+          "updatedAt": "2021-06-15T12:40:05Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> @chris-wood yes. The only thing that is stored from the client, I guess, in the end, is the client_identity; which is really nice as one can argue that in the internal OPAQUE mode the server only has the id of the client and nothing beyond that.\r\n\r\nWell, the server stores an entire `RegistrationUpload` struct.\r\n\r\nIf we really think a change is warranted here, we could say something like, \"... stores its credentials on the server in such a way that knowledge of the secret password is required to access them,\" or whatever. \ud83e\udd37 ",
+          "createdAt": "2021-06-15T12:50:11Z",
+          "updatedAt": "2021-06-15T12:50:11Z"
         }
       ]
     }
