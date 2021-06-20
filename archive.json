@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-06-17T00:54:58.209572+00:00",
+  "timestamp": "2021-06-20T00:59:12.322947+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -4589,13 +4589,15 @@
       "state": "OPEN",
       "author": "kevinlewi",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "chris-wood"
+      ],
       "labels": [
         "next-version"
       ],
       "body": "In https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/22, we added the option for a server to be able to issue a \"fake\" credential response in the absence of a password file for a registered user. The current draft also describes how this response should be constructed. Should we also include test vectors for this functionality?",
       "createdAt": "2021-03-24T21:12:48Z",
-      "updatedAt": "2021-04-15T15:38:44Z",
+      "updatedAt": "2021-06-17T17:19:59Z",
       "closedAt": null,
       "comments": []
     },
@@ -5007,11 +5009,13 @@
       "state": "OPEN",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "kevinlewi"
+      ],
       "labels": [],
       "body": "This should probably include, among other things, how to implement each routine in constant time (in the user secret parameters), and why that's important. ",
       "createdAt": "2021-04-29T17:21:48Z",
-      "updatedAt": "2021-06-02T19:21:12Z",
+      "updatedAt": "2021-06-17T10:00:27Z",
       "closedAt": null,
       "comments": [
         {
@@ -5076,11 +5080,13 @@
       "state": "OPEN",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "chris-wood"
+      ],
       "labels": [],
       "body": "Currently, OPAQUE has support [1] for preventing user enumeration during online _authentication_. It does not, however, prevent an attacker from using the offline _registration_ flow. (This was somewhat touched in #22.) \r\n\r\nThis raises an important question: is the complexity of the enumeration attack prevention and mitigation useful given that the registration flow may already be exploited to learn this same information? \r\n\r\n@kevinlewi points out that the registration flow may have different restrictions in terms of who can trigger it. For example:\r\n\r\n- Registration may be done once during some offline \u201cbootstrap\u201d or configuration step, thereby removing any registration oracle entirely. \r\n- Registration flows may be rate limited or otherwise restricted to attackers, in contrast to the authentication flow which may not have such restrictions. \r\n\r\nIn general, this seems to boil down the use case. I don\u2019t have enough experience with asymmetric PAKE applications to know how registration typically works. I hope we can use this issue to track the question above. \r\n\r\n[1] Assuming that servers construct fake CredentialResponse values without obvious side channels when a user does not exist.",
       "createdAt": "2021-05-24T20:43:19Z",
-      "updatedAt": "2021-05-24T20:43:19Z",
+      "updatedAt": "2021-06-17T17:19:48Z",
       "closedAt": null,
       "comments": []
     },
@@ -5089,15 +5095,17 @@
       "id": "MDU6SXNzdWU5MTI4NTUzNjY=",
       "title": "User enumeration exploiting the OPRF key consistency for a given client",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/215",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bytemare",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "chris-wood"
+      ],
       "labels": [],
       "body": "The very nature of the OPRF needs the server's input to be constant so that the client can deterministically derive their key material. With a fixed, global oprf_seed, used for all clients, the credential_identifier must then be static for a given client. This is also important in the context of the client enumeration mitigation.\r\n\r\nThis opens the current mechanism to the following attacks.\r\n\r\n___\r\n\r\n**1. Default behavior for non-existing clients**\r\n\r\nFor a non-registered client_id an incoming request demands the credentials for, the server must be able to use the same credential_identifier as when a legitimate client is registered for the requested client_id. If not, an attacker could fingerprint the OPRF key used in the evaluation using the same password, and detect an update on that client record.\r\n\r\n**Attack**\r\nThe attacker sends a credential_request without a client_id. If the server chooses to respond with a fake credential_response using a default credential_identifier, the attacker can register the evaluation for their OPRF input.\r\n\r\nThe attacker then sends credential_requests with the same OPRF input but with a (or multiple) client_id. If the client_id is not recognized by the server and it decides to respond with a fake credential_response using a default credential_identifier, it will yield the same evaluation then before, and the attacker knows the client_id is not registered. If the server recognizes it, and thus uses a different credential_identifier, then the evaluation is different, and the attacker then learns that something happened (either the client_id has been registered, or the default value has changed).\r\n\r\n**Solution**\r\n> Fortunately, trivial mitigation to this is that the server MUST NOT engage in the protocol if it can't determine a unique client_id<>credential_identifier mapping, which also seems a very natural to go.\r\n\r\n___\r\n\r\n**2. Update of existing client_id**\r\n\r\nIf credential_identifier = client_id = email or username, and the user wants to change their email or username, the OPRF key would change.\r\n\r\n**Attack**\r\nAn attacker who possesses two probes with different evaluations detects an update has happened, i.e. user activity.\r\n\r\n**Solution**\r\n> None, yet. Open to suggestions.\r\n",
       "createdAt": "2021-06-06T14:59:27Z",
-      "updatedAt": "2021-06-09T22:19:40Z",
-      "closedAt": null,
+      "updatedAt": "2021-06-17T17:19:37Z",
+      "closedAt": "2021-06-17T17:19:37Z",
       "comments": [
         {
           "author": "kevinlewi",
@@ -5140,6 +5148,13 @@
           "body": "@hugokraw , @stef : Thanks for the comments. It sounds like we should opt to keep the existing mitigations for the \"fake CredentialResponse\" (using a separate OPRF) in place, while not focusing too hard on the attacks that @bytemare described above.",
           "createdAt": "2021-06-09T22:19:40Z",
           "updatedAt": "2021-06-09T22:19:40Z"
+        },
+        {
+          "author": "kevinlewi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing and moving the general discussion to #210.",
+          "createdAt": "2021-06-17T17:19:37Z",
+          "updatedAt": "2021-06-17T17:19:37Z"
         }
       ]
     },
@@ -5177,11 +5192,13 @@
       "state": "OPEN",
       "author": "bytemare",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "bytemare"
+      ],
       "labels": [],
       "body": "To ensure a constant time \"fake\" response by the server, two solutions are suggested\r\n\r\n- the server decides on a seed at setup, and deterministically generates a public key at each fake response to use in a fake client record. The server remembers the seed.\r\n- the server generates a public key that it will use in each fake response. The server remembers that public key.",
       "createdAt": "2021-06-07T23:47:11Z",
-      "updatedAt": "2021-06-07T23:47:11Z",
+      "updatedAt": "2021-06-17T17:14:39Z",
       "closedAt": null,
       "comments": []
     },
@@ -5193,11 +5210,13 @@
       "state": "OPEN",
       "author": "claucece",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "kevinlewi"
+      ],
       "labels": [],
       "body": "Apologies if this has already been asked or discussed somewhere else ;)\r\n\r\nAround `oprf_key`:\r\n\r\nIn the `CreateRegistrationResponse` function, an `oprf_key` is derived and presumably stored (even though what is noted is that the `oprf_seed` is the one stored, as the `oprf_key` is derived from it with other params per client). If it is not stored in the server per client, what is the purpose of it being an output of the `CreateRegistrationResponse` if it will be generated each time that is needed? If it should be stored in the server per client, perhaps this needs to be noted in the document. \r\n\r\nAround `oprf_seed`:\r\n\r\nThe `oprf_seed` is defined as:\r\n\r\n`oprf_seed, the server-side seed of Nh bytes used to generate an oprf_key.`\r\n\r\nThis might be read as if there is a client-side seed and a server-side one. Maybe it should only be noted that this is the randomly generated seed used by the server?",
       "createdAt": "2021-06-14T19:36:29Z",
-      "updatedAt": "2021-06-15T12:42:09Z",
+      "updatedAt": "2021-06-17T17:20:24Z",
       "closedAt": null,
       "comments": [
         {
@@ -5224,11 +5243,13 @@
       "state": "OPEN",
       "author": "claucece",
       "authorAssociation": "CONTRIBUTOR",
-      "assignees": [],
+      "assignees": [
+        "chris-wood"
+      ],
       "labels": [],
       "body": "The description of OPAQUE reads:\r\n\r\n```\r\nOPAQUE consists of two stages: registration and authenticated key exchange. In the first stage, a client registers its password with the server and stores its encrypted credentials on the server.\r\n```\r\n\r\nI really like this description but it might not be completely accurate as, as far as I understand, in the Internal mode, no encrypted credentials are stored, as the the client's private and public keys are deterministically derived from the OPRF output. Might be good to note that if what I'm saying is indeed correct ;)\r\n\r\n ",
       "createdAt": "2021-06-14T19:39:50Z",
-      "updatedAt": "2021-06-15T12:50:11Z",
+      "updatedAt": "2021-06-17T17:18:31Z",
       "closedAt": null,
       "comments": [
         {
@@ -17106,13 +17127,13 @@
       "labels": [],
       "body": "A couple open questions:\r\n\r\n1. Does this include everything one would need to verify that KE2 is generated correctly? That seems to be the only thing we actually need to test here. (I don't see much value in testing to make sure the client side, but maybe I'm missing something.)\r\n2. How much work will it be to verify vectors in your respective stacks, @bytemare and @kevinlewi?\r\n",
       "createdAt": "2021-06-02T21:05:42Z",
-      "updatedAt": "2021-06-11T21:46:26Z",
+      "updatedAt": "2021-06-18T04:43:06Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "72ec450e9c4353e888f60497955f905f2ba3f251",
       "headRepository": "cfrg/draft-irtf-cfrg-opaque",
       "headRefName": "caw/fake-creds",
-      "headRefOid": "136cbcaec84148f0f8fcf86c9c1d58819acfa607",
+      "headRefOid": "abc10d37b4868a63b89e305ea460b3a39f76f0d0",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -17184,6 +17205,26 @@
               "body": "I think that would actually! Great idea. (And sorry for the delayed response on this)\r\n\r\nThis means that we wouldn't need the registration portion at all.\r\n\r\nIn addition, could we still have the client_private_key as a parameter, so that implementations can generate the client_public_key associated with the fake record more easily? Thanks :) ",
               "createdAt": "2021-06-11T21:46:26Z",
               "updatedAt": "2021-06-11T21:46:26Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njg2OTQzNTMw",
+          "commit": {
+            "abbreviatedOid": "401918e"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-06-18T00:30:40Z",
+          "updatedAt": "2021-06-18T00:30:40Z",
+          "comments": [
+            {
+              "originalPosition": 4,
+              "body": "Pushed! Please give it a shot.",
+              "createdAt": "2021-06-18T00:30:40Z",
+              "updatedAt": "2021-06-18T00:30:40Z"
             }
           ]
         }
@@ -17405,6 +17446,79 @@
               "updatedAt": "2021-06-07T22:43:51Z"
             }
           ]
+        }
+      ]
+    },
+    {
+      "number": 222,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjcyNDY0MTQz",
+      "title": "Adding implementation considerations section",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/222",
+      "state": "OPEN",
+      "author": "kevinlewi",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Resolves #200 ",
+      "createdAt": "2021-06-17T10:00:16Z",
+      "updatedAt": "2021-06-18T21:48:27Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "4b5ad4c8ae3163969bff1eebe6786c379075a0db",
+      "headRepository": "kevinlewi/draft-irtf-cfrg-opaque",
+      "headRefName": "impl_considerations",
+      "headRefOid": "abc4b904e10f484c5fd7bd2bdc5a756304007107",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njg2MTM5NDIw",
+          "commit": {
+            "abbreviatedOid": "abc4b90"
+          },
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-06-17T10:30:18Z",
+          "updatedAt": "2021-06-17T10:30:18Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njg2OTM3MjI1",
+          "commit": {
+            "abbreviatedOid": "abc4b90"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2021-06-18T00:10:44Z",
+          "updatedAt": "2021-06-18T21:48:15Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "Can we just cite the VOPRF draft for this? It's unclear what \"element\" means in this context, and it's no longer the responsibility of OPAQUE to do this check since VOPRF handles it accordingly. Instead, we might say that implementations must handle errors raised by the VOPRF APIs and abort accordingly. \r\n\r\nThoughts?",
+              "createdAt": "2021-06-18T00:10:44Z",
+              "updatedAt": "2021-06-18T00:11:18Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njg2OTM3NDE3",
+          "commit": {
+            "abbreviatedOid": "abc4b90"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "The first two suggestions seem fine, but I have concerns about the last one being in this document. It seems to leak details of the VOPRF internals unnecessarily. ",
+          "createdAt": "2021-06-18T00:11:19Z",
+          "updatedAt": "2021-06-18T21:48:27Z",
+          "comments": []
         }
       ]
     }
