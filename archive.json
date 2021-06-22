@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-06-20T00:59:12.322947+00:00",
+  "timestamp": "2021-06-22T00:54:10.581684+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -4586,7 +4586,7 @@
       "id": "MDU6SXNzdWU4NDAxNjg0Mjg=",
       "title": "Adding test vectors for \"faked\" credential response?",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/166",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kevinlewi",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -4597,9 +4597,17 @@
       ],
       "body": "In https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/22, we added the option for a server to be able to issue a \"fake\" credential response in the absence of a password file for a registered user. The current draft also describes how this response should be constructed. Should we also include test vectors for this functionality?",
       "createdAt": "2021-03-24T21:12:48Z",
-      "updatedAt": "2021-06-17T17:19:59Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2021-06-21T23:53:10Z",
+      "closedAt": "2021-06-21T23:53:10Z",
+      "comments": [
+        {
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "body": "closed by #214 ",
+          "createdAt": "2021-06-21T23:53:10Z",
+          "updatedAt": "2021-06-21T23:53:10Z"
+        }
+      ]
     },
     {
       "number": 167,
@@ -17120,24 +17128,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NjYwMzkwODI3",
       "title": "Take #2 on fake credential test vectors",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/214",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "A couple open questions:\r\n\r\n1. Does this include everything one would need to verify that KE2 is generated correctly? That seems to be the only thing we actually need to test here. (I don't see much value in testing to make sure the client side, but maybe I'm missing something.)\r\n2. How much work will it be to verify vectors in your respective stacks, @bytemare and @kevinlewi?\r\n",
       "createdAt": "2021-06-02T21:05:42Z",
-      "updatedAt": "2021-06-18T04:43:06Z",
+      "updatedAt": "2021-06-21T23:50:50Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
-      "baseRefOid": "72ec450e9c4353e888f60497955f905f2ba3f251",
+      "baseRefOid": "4b5ad4c8ae3163969bff1eebe6786c379075a0db",
       "headRepository": "cfrg/draft-irtf-cfrg-opaque",
       "headRefName": "caw/fake-creds",
-      "headRefOid": "abc10d37b4868a63b89e305ea460b3a39f76f0d0",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "318709fa772bdd7e12446d276505a24a487bfb11",
+      "closedAt": "2021-06-21T23:50:49Z",
+      "mergedAt": "2021-06-21T23:50:49Z",
+      "mergedBy": "bytemare",
+      "mergeCommit": {
+        "oid": "544c540321b12efad261bacaf1b4bca35c560c6a"
+      },
       "comments": [
         {
           "author": "bytemare",
@@ -17145,6 +17155,20 @@
           "body": "1. Since we need to fake a client record, and the envelope is set to 0s, there must be a fake client public key, atop the client identifier and KE2 in the vectors. I added a commit to patch that.\r\n2. Now they work :)",
           "createdAt": "2021-06-06T13:26:47Z",
           "updatedAt": "2021-06-06T13:26:47Z"
+        },
+        {
+          "author": "kevinlewi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I just pushed a commit which does the following:\r\n\r\n- Introduced a new parameter, `fake_masking_key`, as part of the test vectors. Previously, we were just generating an all-zeros bytestring for this.\r\n- Adds the inputs `fake_client_private_key`, `fake_client_public_key`, and `fake_masking_key` to all of the fake test vectors. Also added supporting text in the sections to explain what these parameters are.\r\n- Removes the intermediates and unnecessary inputs/outputs that existed in fake test vectors, in particular moving KE1 to an input instead of an output, and ensuring that KE2 is the only output.\r\n- Fixed a bug in the existing fake test vector generation case: the previous code was using the \"real\" client pkU to generate KE1 and KE2 instead of the fake one\r\n\r\nThe current commit produces test vectors which match my Rust implementation in opaque-ke.",
+          "createdAt": "2021-06-21T00:46:58Z",
+          "updatedAt": "2021-06-21T00:48:29Z"
+        },
+        {
+          "author": "kevinlewi",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Latest amendment to the commit renames `fake_client_private_key`, `fake_client_public_key`, and `fake_masking_key` back to just `client_private_key`, `client_public_key`, and `masking_key`",
+          "createdAt": "2021-06-21T17:37:01Z",
+          "updatedAt": "2021-06-21T17:37:01Z"
         }
       ],
       "reviews": [
@@ -17227,6 +17251,19 @@
               "updatedAt": "2021-06-18T00:30:40Z"
             }
           ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njg4ODgxMDE4",
+          "commit": {
+            "abbreviatedOid": "318709f"
+          },
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Looks good! Vectors pass \ud83c\udf89\r\n\r\nThank you for the modifications!",
+          "createdAt": "2021-06-21T21:36:18Z",
+          "updatedAt": "2021-06-21T21:36:18Z",
+          "comments": []
         }
       ]
     },
@@ -17461,13 +17498,13 @@
       "labels": [],
       "body": "Resolves #200 ",
       "createdAt": "2021-06-17T10:00:16Z",
-      "updatedAt": "2021-06-18T21:48:27Z",
+      "updatedAt": "2021-06-22T00:15:43Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
-      "baseRefOid": "4b5ad4c8ae3163969bff1eebe6786c379075a0db",
+      "baseRefOid": "544c540321b12efad261bacaf1b4bca35c560c6a",
       "headRepository": "kevinlewi/draft-irtf-cfrg-opaque",
       "headRefName": "impl_considerations",
-      "headRefOid": "abc4b904e10f484c5fd7bd2bdc5a756304007107",
+      "headRefOid": "379f59e5a56a977e87711988a5529d3e3b38ca64",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -17519,6 +17556,26 @@
           "createdAt": "2021-06-18T00:11:19Z",
           "updatedAt": "2021-06-18T21:48:27Z",
           "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njg4OTU5Mzg3",
+          "commit": {
+            "abbreviatedOid": "abc4b90"
+          },
+          "author": "kevinlewi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-06-22T00:15:11Z",
+          "updatedAt": "2021-06-22T00:15:11Z",
+          "comments": [
+            {
+              "originalPosition": 15,
+              "body": "Sounds good, the new text reads:\r\n\r\n```\r\n- Deserialization checks: When parsing messages that have crossed trust boundaries (e.g.\r\na network wire), implementations should properly handle all error conditions covered in\r\n{{I-D.irtf-cfrg-voprf}} and abort accordingly.\r\n```",
+              "createdAt": "2021-06-22T00:15:11Z",
+              "updatedAt": "2021-06-22T00:15:11Z"
+            }
+          ]
         }
       ]
     }
