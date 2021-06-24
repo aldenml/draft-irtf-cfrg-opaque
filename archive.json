@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-06-22T00:54:10.581684+00:00",
+  "timestamp": "2021-06-24T00:44:25.001945+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -5014,7 +5014,7 @@
       "id": "MDU6SXNzdWU4NzEyNjMxNDA=",
       "title": "Add implementation considerations section",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/200",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -5023,8 +5023,8 @@
       "labels": [],
       "body": "This should probably include, among other things, how to implement each routine in constant time (in the user secret parameters), and why that's important. ",
       "createdAt": "2021-04-29T17:21:48Z",
-      "updatedAt": "2021-06-17T10:00:27Z",
-      "closedAt": null,
+      "updatedAt": "2021-06-22T08:52:07Z",
+      "closedAt": "2021-06-22T08:52:07Z",
       "comments": [
         {
           "author": "kevinlewi",
@@ -17491,24 +17491,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0NjcyNDY0MTQz",
       "title": "Adding implementation considerations section",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/222",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "kevinlewi",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Resolves #200 ",
       "createdAt": "2021-06-17T10:00:16Z",
-      "updatedAt": "2021-06-22T00:15:43Z",
+      "updatedAt": "2021-06-22T08:52:07Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "544c540321b12efad261bacaf1b4bca35c560c6a",
       "headRepository": "kevinlewi/draft-irtf-cfrg-opaque",
       "headRefName": "impl_considerations",
       "headRefOid": "379f59e5a56a977e87711988a5529d3e3b38ca64",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2021-06-22T08:52:07Z",
+      "mergedAt": "2021-06-22T08:52:07Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "df639c8407280d1057b76751b6921b694df254c7"
+      },
       "comments": [],
       "reviews": [
         {
@@ -17576,8 +17578,73 @@
               "updatedAt": "2021-06-22T00:15:11Z"
             }
           ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njg5MjM2MjY2",
+          "commit": {
+            "abbreviatedOid": "379f59e"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-06-22T08:52:01Z",
+          "updatedAt": "2021-06-22T08:52:01Z",
+          "comments": []
         }
       ]
+    },
+    {
+      "number": 223,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njc2MDgzMDEx",
+      "title": "Removing oprf_key from output of CreateCredentialResponse",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/223",
+      "state": "OPEN",
+      "author": "kevinlewi",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #220.\r\n\r\nAlso moves `oprf_key` in test vectors from \"inputs\" to \"intermediates\".",
+      "createdAt": "2021-06-23T08:51:08Z",
+      "updatedAt": "2021-06-23T22:14:24Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "df639c8407280d1057b76751b6921b694df254c7",
+      "headRepository": "kevinlewi/draft-irtf-cfrg-opaque",
+      "headRefName": "remove_oprf_key",
+      "headRefOid": "78e6ec0d0e94848159aa4c6ef72ca75efc633652",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 224,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njc2MDkwOTc5",
+      "title": "Fix fake_ prefixes in test vectors",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/224",
+      "state": "OPEN",
+      "author": "kevinlewi",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In this comment (https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/214#issuecomment-865220659) of #214 , I said I removed the fake_ prefixes from some variable names. However, I failed to commit some of those changes. This PR fixes the issue.",
+      "createdAt": "2021-06-23T09:01:30Z",
+      "updatedAt": "2021-06-23T22:14:16Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "df639c8407280d1057b76751b6921b694df254c7",
+      "headRepository": "kevinlewi/draft-irtf-cfrg-opaque",
+      "headRefName": "fix_fake_names",
+      "headRefOid": "f88bb27bd6e015308d7992dc75b99bf5fc20ed0e",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
