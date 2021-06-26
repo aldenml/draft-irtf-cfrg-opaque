@@ -1109,7 +1109,7 @@ Steps:
 
    In the case of a record that does not exist and if client enumeration
    prevention is desired, the server must respond to the credential
-   request, to fake the existence of the record.  The server SHOULD
+   request to fake the existence of the record.  The server SHOULD
    invoke the CreateCredentialResponse function with a fake client
    record argument that is configured so that:
 
@@ -1125,7 +1125,7 @@ Steps:
    the first user record of the application), and then readily available
    during the application's lifetime.  This ensures relative constant-
    time access and processing of the record compared to legitimate
-   client record, avoid timing leaks.
+   client record, avoiding timing leaks.
 
    In the generated test vectors from Appendix C.2, we use
    "client_public_key" for this record's public key, and "masking_key"

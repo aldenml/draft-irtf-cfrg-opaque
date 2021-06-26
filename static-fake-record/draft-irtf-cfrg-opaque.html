@@ -2457,7 +2457,7 @@ Steps:
 </pre><a href="#section-6.1.2.2-3" class="pilcrow">¶</a>
 </div>
 <p id="section-6.1.2.2-4">In the case of a record that does not exist and if client enumeration prevention is desired,
-the server must respond to the credential request, to fake the existence of the record.
+the server must respond to the credential request to fake the existence of the record.
 The server SHOULD invoke the CreateCredentialResponse function with a fake client record
 argument that is configured so that:<a href="#section-6.1.2.2-4" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -2471,7 +2471,7 @@ argument that is configured so that:<a href="#section-6.1.2.2-4" class="pilcrow"
 <p id="section-6.1.2.2-6">It is RECOMMENDED that a fake client record is created once (e.g. as the first user record
 of the application), and then readily available during the application's lifetime. This ensures
 relative constant-time access and processing of the record compared to legitimate client record,
-avoid timing leaks.<a href="#section-6.1.2.2-6" class="pilcrow">¶</a></p>
+avoiding timing leaks.<a href="#section-6.1.2.2-6" class="pilcrow">¶</a></p>
 <p id="section-6.1.2.2-7">In the generated test vectors from <a href="#fake-vectors" class="xref">Appendix C.2</a>, we use <code>client_public_key</code> for this record's
 public key, and <code>masking_key</code> for the record's masking key parameter.<a href="#section-6.1.2.2-7" class="pilcrow">¶</a></p>
 <p id="section-6.1.2.2-8">Note that the responses output by either scenario are indistinguishable to an adversary
