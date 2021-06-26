@@ -1124,7 +1124,7 @@ Steps:
    It is RECOMMENDED that a fake client record is created once (e.g. as
    the first user record of the application), and then readily available
    during the application's lifetime.  This ensures relative constant-
-   time access and processing of the record compared to legitimate
+   time access and processing of the record compared to a legitimate
    client record, avoiding timing leaks.
 
    In the generated test vectors from Appendix C.2, we use
