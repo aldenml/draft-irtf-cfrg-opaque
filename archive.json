@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-06-24T00:44:25.001945+00:00",
+  "timestamp": "2021-06-27T01:03:25.775198+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -5215,7 +5215,7 @@
       "id": "MDU6SXNzdWU5MjA3MTUwMzI=",
       "title": "Questions around `oprf_key` and `oprf_seed`",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/220",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "claucece",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -5224,8 +5224,8 @@
       "labels": [],
       "body": "Apologies if this has already been asked or discussed somewhere else ;)\r\n\r\nAround `oprf_key`:\r\n\r\nIn the `CreateRegistrationResponse` function, an `oprf_key` is derived and presumably stored (even though what is noted is that the `oprf_seed` is the one stored, as the `oprf_key` is derived from it with other params per client). If it is not stored in the server per client, what is the purpose of it being an output of the `CreateRegistrationResponse` if it will be generated each time that is needed? If it should be stored in the server per client, perhaps this needs to be noted in the document. \r\n\r\nAround `oprf_seed`:\r\n\r\nThe `oprf_seed` is defined as:\r\n\r\n`oprf_seed, the server-side seed of Nh bytes used to generate an oprf_key.`\r\n\r\nThis might be read as if there is a client-side seed and a server-side one. Maybe it should only be noted that this is the randomly generated seed used by the server?",
       "createdAt": "2021-06-14T19:36:29Z",
-      "updatedAt": "2021-06-17T17:20:24Z",
-      "closedAt": null,
+      "updatedAt": "2021-06-25T15:16:07Z",
+      "closedAt": "2021-06-25T15:16:07Z",
       "comments": [
         {
           "author": "bytemare",
@@ -5289,6 +5289,22 @@
           "updatedAt": "2021-06-15T12:50:11Z"
         }
       ]
+    },
+    {
+      "number": 226,
+      "id": "MDU6SXNzdWU5MzA0NjgyNjY=",
+      "title": "Clarify that struct notation comes from RFC8446, Section 3",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/226",
+      "state": "OPEN",
+      "author": "kevinlewi",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We should clarify that all struct notation is derived from RFC8446 (can be just one sentence)",
+      "createdAt": "2021-06-25T20:03:15Z",
+      "updatedAt": "2021-06-25T20:03:15Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -17599,46 +17615,146 @@
       "id": "MDExOlB1bGxSZXF1ZXN0Njc2MDgzMDEx",
       "title": "Removing oprf_key from output of CreateCredentialResponse",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/223",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "kevinlewi",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Fixes #220.\r\n\r\nAlso moves `oprf_key` in test vectors from \"inputs\" to \"intermediates\".",
       "createdAt": "2021-06-23T08:51:08Z",
-      "updatedAt": "2021-06-23T22:14:24Z",
+      "updatedAt": "2021-06-25T15:16:07Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "df639c8407280d1057b76751b6921b694df254c7",
       "headRepository": "kevinlewi/draft-irtf-cfrg-opaque",
       "headRefName": "remove_oprf_key",
       "headRefOid": "78e6ec0d0e94848159aa4c6ef72ca75efc633652",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2021-06-25T15:16:07Z",
+      "mergedAt": "2021-06-25T15:16:07Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "e52b7f8aad144ce498c438159c7a95a538700b12"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjkyOTI4MTY0",
+          "commit": {
+            "abbreviatedOid": "78e6ec0"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-06-25T15:16:02Z",
+          "updatedAt": "2021-06-25T15:16:02Z",
+          "comments": []
+        }
+      ]
     },
     {
       "number": 224,
       "id": "MDExOlB1bGxSZXF1ZXN0Njc2MDkwOTc5",
       "title": "Fix fake_ prefixes in test vectors",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/224",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "kevinlewi",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "In this comment (https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/214#issuecomment-865220659) of #214 , I said I removed the fake_ prefixes from some variable names. However, I failed to commit some of those changes. This PR fixes the issue.",
       "createdAt": "2021-06-23T09:01:30Z",
-      "updatedAt": "2021-06-23T22:14:16Z",
+      "updatedAt": "2021-06-25T15:15:27Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "df639c8407280d1057b76751b6921b694df254c7",
       "headRepository": "kevinlewi/draft-irtf-cfrg-opaque",
       "headRefName": "fix_fake_names",
       "headRefOid": "f88bb27bd6e015308d7992dc75b99bf5fc20ed0e",
+      "closedAt": "2021-06-25T15:15:27Z",
+      "mergedAt": "2021-06-25T15:15:27Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "19eb915a66ad8646489f64ee3fbd6fbe534d675d"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjkyOTI3NTAz",
+          "commit": {
+            "abbreviatedOid": "f88bb27"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-06-25T15:15:22Z",
+          "updatedAt": "2021-06-25T15:15:22Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 225,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njc3MzYwMTk1",
+      "title": "Contradictory statements on draft",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/225",
+      "state": "OPEN",
+      "author": "jansen44",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "I've been studying OPAQUE for the last month or so (and I must say I'm in love with it). Yesterday I was reading the draft and found two statements that looked a little contradictory. \r\n\r\nI sent an email asking if one of them was really an accident and @bytemare (at least I think it was him lol) replied me saying that I was correct and also that you guys were accepting pull requests, so here I am :blush:.\r\n\r\n- The first statement is the one that that I sent on the email: this statement at the fourth section, second paragraph:  \"OPAQUE allows applications to either provide custom client private and public keys for authentication, or to generate them internally. [...] These two options are defined as the \"internal\" and \"external\" modes, respectively. [...]\"... I think that \"internal mode\" would better refer to \"generate keys internally\", so the \"respectively\" term was kinda misleading.\r\n- The second statement is at the fourth section, third paragraph: \"The following types of application credential information are considered: client_private_key: The encoded client private key for the AKE protocol.\" Every other item on this list was indeed used and stored inside the `CleartextCredentials` struct, but client_private_key was totally ignored, so I guess it's actually not a credential information to be considered (at least at this context).\r\n\r\nI don't know if any of what I said really makes sense to you guys, but I hope it does help \u270c\ud83c\udffb .",
+      "createdAt": "2021-06-24T18:58:10Z",
+      "updatedAt": "2021-06-26T09:29:12Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "df639c8407280d1057b76751b6921b694df254c7",
+      "headRepository": "jansen44/draft-irtf-cfrg-opaque",
+      "headRefName": "master",
+      "headRefOid": "2968b46685c4fec7eb6996e51a492c53911fb849",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjkzMjk1MDI4",
+          "commit": {
+            "abbreviatedOid": "2968b46"
+          },
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-06-26T09:28:45Z",
+          "updatedAt": "2021-06-26T09:28:45Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 227,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njc4MzIyMDI0",
+      "title": "Ensure constant-time fake credential response",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/227",
+      "state": "OPEN",
+      "author": "bytemare",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [
+        "editorial"
+      ],
+      "body": "Closes #219 ",
+      "createdAt": "2021-06-26T11:24:36Z",
+      "updatedAt": "2021-06-26T11:30:50Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "e52b7f8aad144ce498c438159c7a95a538700b12",
+      "headRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "headRefName": "dbz/static-fake-record",
+      "headRefOid": "cb54748728e7c8c76e1c21e904ea4db6a2f965a8",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
