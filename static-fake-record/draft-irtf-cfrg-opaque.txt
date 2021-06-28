@@ -1126,10 +1126,6 @@ Steps:
    legitimate client records.  This allows servers to locate the record
    in time comparable to that of a legitimate client record.
 
-   In the generated test vectors from Appendix C.2, we use
-   "client_public_key" for this record's public key, and "masking_key"
-   for the record's masking key parameter.
-
    Note that the responses output by either scenario are
    indistinguishable to an adversary that is unable to guess the
    registered password for the client corresponding to
@@ -3006,6 +3002,9 @@ C.1.8.4.  Output Values
    448a526f
 
 C.2.  Fake Test Vectors
+
+   We use "client_public_key" for the fake record's public key, and
+   "masking_key" for the fake record's masking key parameter.
 
 C.2.1.  OPAQUE-3DH Fake Test Vector 1
 
