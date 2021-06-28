@@ -5,12 +5,12 @@
 Network Working Group                                        H. Krawczyk
 Internet-Draft                                       Algorand Foundation
 Intended status: Informational                               D. Bourdrez
-Expires: 28 December 2021                                               
+Expires: 30 December 2021                                               
                                                                  K. Lewi
                                                            Novi Research
                                                                C.A. Wood
                                                               Cloudflare
-                                                            26 June 2021
+                                                            28 June 2021
 
 
                   The OPAQUE Asymmetric PAKE Protocol
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 December 2021.
+   This Internet-Draft will expire on 30 December 2021.
 
 Copyright Notice
 
@@ -1122,10 +1122,9 @@ Steps:
       of length Ne
 
    It is RECOMMENDED that a fake client record is created once (e.g. as
-   the first user record of the application), and then readily available
-   during the application's lifetime.  This ensures relative constant-
-   time access and processing of the record compared to a legitimate
-   client record, avoiding timing leaks.
+   the first user record of the application) and stored alongside
+   legitimate client records.  This allows servers to locate the record
+   in time comparable to that of a legitimate client record.
 
    In the generated test vectors from Appendix C.2, we use
    "client_public_key" for this record's public key, and "masking_key"

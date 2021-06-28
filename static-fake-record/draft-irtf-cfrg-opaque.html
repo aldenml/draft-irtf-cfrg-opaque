@@ -1020,7 +1020,7 @@ address div.right {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Krawczyk, et al.</td>
-<td class="center">Expires 28 December 2021</td>
+<td class="center">Expires 30 December 2021</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1033,12 +1033,12 @@ address div.right {
 <dd class="internet-draft">draft-irtf-cfrg-opaque-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2021-06-26" class="published">26 June 2021</time>
+<time datetime="2021-06-28" class="published">28 June 2021</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2021-12-28">28 December 2021</time></dd>
+<dd class="expires"><time datetime="2021-12-30">30 December 2021</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1098,7 +1098,7 @@ based on 3DH.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 28 December 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 30 December 2021.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2469,9 +2469,8 @@ argument that is configured so that:<a href="#section-6.1.2.2-4" class="pilcrow"
 </li>
             </ul>
 <p id="section-6.1.2.2-6">It is RECOMMENDED that a fake client record is created once (e.g. as the first user record
-of the application), and then readily available during the application's lifetime. This ensures
-relative constant-time access and processing of the record compared to a legitimate client record,
-avoiding timing leaks.<a href="#section-6.1.2.2-6" class="pilcrow">¶</a></p>
+of the application) and stored alongside legitimate client records. This allows servers to locate
+the record in time comparable to that of a legitimate client record.<a href="#section-6.1.2.2-6" class="pilcrow">¶</a></p>
 <p id="section-6.1.2.2-7">In the generated test vectors from <a href="#fake-vectors" class="xref">Appendix C.2</a>, we use <code>client_public_key</code> for this record's
 public key, and <code>masking_key</code> for the record's masking key parameter.<a href="#section-6.1.2.2-7" class="pilcrow">¶</a></p>
 <p id="section-6.1.2.2-8">Note that the responses output by either scenario are indistinguishable to an adversary
