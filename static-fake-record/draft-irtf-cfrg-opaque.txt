@@ -1108,7 +1108,7 @@ Steps:
 8. Output response
 
    In the case of a record that does not exist and if client enumeration
-   prevention is desired, the server must respond to the credential
+   prevention is desired, the server MUST respond to the credential
    request to fake the existence of the record.  The server SHOULD
    invoke the CreateCredentialResponse function with a fake client
    record argument that is configured so that:
