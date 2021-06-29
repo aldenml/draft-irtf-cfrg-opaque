@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-06-27T01:03:25.775198+00:00",
+  "timestamp": "2021-06-29T00:54:20.481018+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -17706,13 +17706,13 @@
       "labels": [],
       "body": "I've been studying OPAQUE for the last month or so (and I must say I'm in love with it). Yesterday I was reading the draft and found two statements that looked a little contradictory. \r\n\r\nI sent an email asking if one of them was really an accident and @bytemare (at least I think it was him lol) replied me saying that I was correct and also that you guys were accepting pull requests, so here I am :blush:.\r\n\r\n- The first statement is the one that that I sent on the email: this statement at the fourth section, second paragraph:  \"OPAQUE allows applications to either provide custom client private and public keys for authentication, or to generate them internally. [...] These two options are defined as the \"internal\" and \"external\" modes, respectively. [...]\"... I think that \"internal mode\" would better refer to \"generate keys internally\", so the \"respectively\" term was kinda misleading.\r\n- The second statement is at the fourth section, third paragraph: \"The following types of application credential information are considered: client_private_key: The encoded client private key for the AKE protocol.\" Every other item on this list was indeed used and stored inside the `CleartextCredentials` struct, but client_private_key was totally ignored, so I guess it's actually not a credential information to be considered (at least at this context).\r\n\r\nI don't know if any of what I said really makes sense to you guys, but I hope it does help \u270c\ud83c\udffb .",
       "createdAt": "2021-06-24T18:58:10Z",
-      "updatedAt": "2021-06-26T09:29:12Z",
+      "updatedAt": "2021-06-28T15:13:32Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "df639c8407280d1057b76751b6921b694df254c7",
       "headRepository": "jansen44/draft-irtf-cfrg-opaque",
       "headRefName": "master",
-      "headRefOid": "2968b46685c4fec7eb6996e51a492c53911fb849",
+      "headRefOid": "b5246cf68746912bd5b3606b76fd3d583f017e75",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -17731,6 +17731,26 @@
           "createdAt": "2021-06-26T09:28:45Z",
           "updatedAt": "2021-06-26T09:28:45Z",
           "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njk0MDUwMjI5",
+          "commit": {
+            "abbreviatedOid": "2968b46"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2021-06-28T14:47:54Z",
+          "updatedAt": "2021-06-28T14:47:58Z",
+          "comments": [
+            {
+              "originalPosition": 12,
+              "body": "This is still used (for external mode), so I think we should keep this.",
+              "createdAt": "2021-06-28T14:47:54Z",
+              "updatedAt": "2021-06-28T14:47:58Z"
+            }
+          ]
         }
       ]
     },
@@ -17748,13 +17768,93 @@
       ],
       "body": "Closes #219 ",
       "createdAt": "2021-06-26T11:24:36Z",
-      "updatedAt": "2021-06-26T11:30:50Z",
+      "updatedAt": "2021-06-29T00:30:51Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "e52b7f8aad144ce498c438159c7a95a538700b12",
       "headRepository": "cfrg/draft-irtf-cfrg-opaque",
       "headRefName": "dbz/static-fake-record",
-      "headRefOid": "cb54748728e7c8c76e1c21e904ea4db6a2f965a8",
+      "headRefOid": "cdf994e533037e4852d7de8f7ca2e57c9b69b1b3",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@bytemare, sorry, I meant to suggest that the comment could go [here](https://cfrg.github.io/draft-irtf-cfrg-opaque/draft-irtf-cfrg-opaque.html#section-appendix.c), at the end of the text in the start of Appendix C.",
+          "createdAt": "2021-06-28T23:16:20Z",
+          "updatedAt": "2021-06-28T23:16:20Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njk0MDU3OTIy",
+          "commit": {
+            "abbreviatedOid": "cb54748"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2021-06-28T14:54:09Z",
+          "updatedAt": "2021-06-28T14:57:08Z",
+          "comments": [
+            {
+              "originalPosition": 7,
+              "body": "```suggestion\r\nthe server MUST respond to the credential request to fake the existence of the record.\r\n```",
+              "createdAt": "2021-06-28T14:54:09Z",
+              "updatedAt": "2021-06-28T14:57:08Z"
+            },
+            {
+              "originalPosition": 21,
+              "body": "This should probably move to the test vector section, rather than be listed here.",
+              "createdAt": "2021-06-28T14:55:59Z",
+              "updatedAt": "2021-06-28T14:57:21Z"
+            },
+            {
+              "originalPosition": 19,
+              "body": "```suggestion\r\nIt is RECOMMENDED that a fake client record is created once (e.g. as the first user record\r\nof the application) and stored alongside legitimate client records. This allows servers to locate\r\nthe record in time comparable to that of a legitimate client record.\r\n```",
+              "createdAt": "2021-06-28T14:57:04Z",
+              "updatedAt": "2021-06-28T14:57:08Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njk0NDk1MDEw",
+          "commit": {
+            "abbreviatedOid": "cdf994e"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "Can we move the text up to the start of Appendix C?",
+          "createdAt": "2021-06-29T00:30:51Z",
+          "updatedAt": "2021-06-29T00:30:51Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 228,
+      "id": "MDExOlB1bGxSZXF1ZXN0Njc5MTE4NjU5",
+      "title": "Note TLS wire format syntax.",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/228",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #226.",
+      "createdAt": "2021-06-28T14:52:00Z",
+      "updatedAt": "2021-06-28T14:52:06Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "e52b7f8aad144ce498c438159c7a95a538700b12",
+      "headRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "headRefName": "caw/syntax-note",
+      "headRefOid": "09c996c63cb0f6e80e9d1f1bde5904e58965cb9d",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
