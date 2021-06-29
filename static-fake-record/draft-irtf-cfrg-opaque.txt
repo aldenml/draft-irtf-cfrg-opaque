@@ -5,12 +5,12 @@
 Network Working Group                                        H. Krawczyk
 Internet-Draft                                       Algorand Foundation
 Intended status: Informational                               D. Bourdrez
-Expires: 30 December 2021                                               
+Expires: 31 December 2021                                               
                                                                  K. Lewi
                                                            Novi Research
                                                                C.A. Wood
                                                               Cloudflare
-                                                            28 June 2021
+                                                            29 June 2021
 
 
                   The OPAQUE Asymmetric PAKE Protocol
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 December 2021.
+   This Internet-Draft will expire on 31 December 2021.
 
 Copyright Notice
 
@@ -2134,7 +2134,9 @@ Appendix C.  Test Vectors
    computed during authentication of an unknown or unregistered user.
    Note that "masking_key", "client_private_key", and
    "client_public_key" are used as additional inputs as described in
-   Section 6.1.2.2.
+   Section 6.1.2.2. "client_public_key" is used as the fake record's
+   public key, and "masking_key" for the fake record's masking key
+   parameter.
 
    All values are encoded in hexadecimal strings.  The configuration
    information includes the (OPRF, Hash, MHF, EnvelopeMode, Group)
@@ -3002,9 +3004,6 @@ C.1.8.4.  Output Values
    448a526f
 
 C.2.  Fake Test Vectors
-
-   We use "client_public_key" for the fake record's public key, and
-   "masking_key" for the fake record's masking key parameter.
 
 C.2.1.  OPAQUE-3DH Fake Test Vector 1
 
