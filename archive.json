@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-06-29T00:54:20.481018+00:00",
+  "timestamp": "2021-07-01T00:59:47.709790+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -5197,7 +5197,7 @@
       "id": "MDU6SXNzdWU5MTQwNTc1MzE=",
       "title": "Give constant-time trick in current user enumeration mitigation scheme",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/219",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "bytemare",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -5206,8 +5206,8 @@
       "labels": [],
       "body": "To ensure a constant time \"fake\" response by the server, two solutions are suggested\r\n\r\n- the server decides on a seed at setup, and deterministically generates a public key at each fake response to use in a fake client record. The server remembers the seed.\r\n- the server generates a public key that it will use in each fake response. The server remembers that public key.",
       "createdAt": "2021-06-07T23:47:11Z",
-      "updatedAt": "2021-06-17T17:14:39Z",
-      "closedAt": null,
+      "updatedAt": "2021-06-29T01:41:46Z",
+      "closedAt": "2021-06-29T01:41:46Z",
       "comments": []
     },
     {
@@ -5295,15 +5295,15 @@
       "id": "MDU6SXNzdWU5MzA0NjgyNjY=",
       "title": "Clarify that struct notation comes from RFC8446, Section 3",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/226",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kevinlewi",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "We should clarify that all struct notation is derived from RFC8446 (can be just one sentence)",
       "createdAt": "2021-06-25T20:03:15Z",
-      "updatedAt": "2021-06-25T20:03:15Z",
-      "closedAt": null,
+      "updatedAt": "2021-06-29T01:42:09Z",
+      "closedAt": "2021-06-29T01:42:09Z",
       "comments": []
     }
   ],
@@ -17699,24 +17699,26 @@
       "id": "MDExOlB1bGxSZXF1ZXN0Njc3MzYwMTk1",
       "title": "Contradictory statements on draft",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/225",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "jansen44",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "I've been studying OPAQUE for the last month or so (and I must say I'm in love with it). Yesterday I was reading the draft and found two statements that looked a little contradictory. \r\n\r\nI sent an email asking if one of them was really an accident and @bytemare (at least I think it was him lol) replied me saying that I was correct and also that you guys were accepting pull requests, so here I am :blush:.\r\n\r\n- The first statement is the one that that I sent on the email: this statement at the fourth section, second paragraph:  \"OPAQUE allows applications to either provide custom client private and public keys for authentication, or to generate them internally. [...] These two options are defined as the \"internal\" and \"external\" modes, respectively. [...]\"... I think that \"internal mode\" would better refer to \"generate keys internally\", so the \"respectively\" term was kinda misleading.\r\n- The second statement is at the fourth section, third paragraph: \"The following types of application credential information are considered: client_private_key: The encoded client private key for the AKE protocol.\" Every other item on this list was indeed used and stored inside the `CleartextCredentials` struct, but client_private_key was totally ignored, so I guess it's actually not a credential information to be considered (at least at this context).\r\n\r\nI don't know if any of what I said really makes sense to you guys, but I hope it does help \u270c\ud83c\udffb .",
       "createdAt": "2021-06-24T18:58:10Z",
-      "updatedAt": "2021-06-28T15:13:32Z",
+      "updatedAt": "2021-06-29T01:46:23Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "df639c8407280d1057b76751b6921b694df254c7",
       "headRepository": "jansen44/draft-irtf-cfrg-opaque",
       "headRefName": "master",
       "headRefOid": "b5246cf68746912bd5b3606b76fd3d583f017e75",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2021-06-29T01:46:23Z",
+      "mergedAt": "2021-06-29T01:46:23Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "d60cb423c875ded5581d667ceabeee7b38c42531"
+      },
       "comments": [],
       "reviews": [
         {
@@ -17751,6 +17753,19 @@
               "updatedAt": "2021-06-28T14:47:58Z"
             }
           ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njk0NTIxMDU1",
+          "commit": {
+            "abbreviatedOid": "b5246cf"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-06-29T01:45:05Z",
+          "updatedAt": "2021-06-29T01:45:05Z",
+          "comments": []
         }
       ]
     },
@@ -17759,7 +17774,7 @@
       "id": "MDExOlB1bGxSZXF1ZXN0Njc4MzIyMDI0",
       "title": "Ensure constant-time fake credential response",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/227",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "bytemare",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
@@ -17768,17 +17783,19 @@
       ],
       "body": "Closes #219 ",
       "createdAt": "2021-06-26T11:24:36Z",
-      "updatedAt": "2021-06-29T00:30:51Z",
+      "updatedAt": "2021-06-29T01:41:46Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "e52b7f8aad144ce498c438159c7a95a538700b12",
       "headRepository": "cfrg/draft-irtf-cfrg-opaque",
       "headRefName": "dbz/static-fake-record",
-      "headRefOid": "cdf994e533037e4852d7de8f7ca2e57c9b69b1b3",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "9ea94ba75b980f50cc3e8b4a53d697f4975ee18c",
+      "closedAt": "2021-06-29T01:41:46Z",
+      "mergedAt": "2021-06-29T01:41:46Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "db3e5e221bee5ab47640d2798a882d953a4c3b75"
+      },
       "comments": [
         {
           "author": "chris-wood",
@@ -17786,6 +17803,13 @@
           "body": "@bytemare, sorry, I meant to suggest that the comment could go [here](https://cfrg.github.io/draft-irtf-cfrg-opaque/draft-irtf-cfrg-opaque.html#section-appendix.c), at the end of the text in the start of Appendix C.",
           "createdAt": "2021-06-28T23:16:20Z",
           "updatedAt": "2021-06-28T23:16:20Z"
+        },
+        {
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> @bytemare, sorry, I meant to suggest that the comment could go [here](https://cfrg.github.io/draft-irtf-cfrg-opaque/draft-irtf-cfrg-opaque.html#section-appendix.c), at the end of the text in the start of Appendix C.\r\n\r\nAh, of course. You mean \"Test Vectors\", right?\r\n",
+          "createdAt": "2021-06-29T01:24:42Z",
+          "updatedAt": "2021-06-29T01:24:56Z"
         }
       ],
       "reviews": [
@@ -17833,6 +17857,19 @@
           "createdAt": "2021-06-29T00:30:51Z",
           "updatedAt": "2021-06-29T00:30:51Z",
           "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njk0NTE5ODQy",
+          "commit": {
+            "abbreviatedOid": "9ea94ba"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-06-29T01:41:40Z",
+          "updatedAt": "2021-06-29T01:41:40Z",
+          "comments": []
         }
       ]
     },
@@ -17841,26 +17878,42 @@
       "id": "MDExOlB1bGxSZXF1ZXN0Njc5MTE4NjU5",
       "title": "Note TLS wire format syntax.",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/228",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #226.",
       "createdAt": "2021-06-28T14:52:00Z",
-      "updatedAt": "2021-06-28T14:52:06Z",
+      "updatedAt": "2021-06-29T01:42:10Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
       "baseRefName": "master",
       "baseRefOid": "e52b7f8aad144ce498c438159c7a95a538700b12",
       "headRepository": "cfrg/draft-irtf-cfrg-opaque",
       "headRefName": "caw/syntax-note",
       "headRefOid": "09c996c63cb0f6e80e9d1f1bde5904e58965cb9d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2021-06-29T01:42:10Z",
+      "mergedAt": "2021-06-29T01:42:09Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "65be0747a26c333c276eeb264f80b48244d22212"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njk0NTE1NTk0",
+          "commit": {
+            "abbreviatedOid": "09c996c"
+          },
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-06-29T01:29:37Z",
+          "updatedAt": "2021-06-29T01:29:37Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
