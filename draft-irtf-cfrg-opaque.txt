@@ -5,12 +5,12 @@
 Network Working Group                                        H. Krawczyk
 Internet-Draft                                       Algorand Foundation
 Intended status: Informational                               D. Bourdrez
-Expires: 31 December 2021                                               
+Expires: 2 January 2022                                                 
                                                                  K. Lewi
                                                            Novi Research
                                                                C.A. Wood
                                                               Cloudflare
-                                                            29 June 2021
+                                                             1 July 2021
 
 
                   The OPAQUE Asymmetric PAKE Protocol
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 31 December 2021.
+   This Internet-Draft will expire on 2 January 2022.
 
 Copyright Notice
 
@@ -1016,7 +1016,7 @@ Steps:
 
        (ke3,
        session_key,
-       export_key) = ClientFinish(password, client_identity,
+       export_key) = ClientFinish(client_identity, password,
                                  server_identity, ke2)
 
                             ke3
@@ -1324,9 +1324,9 @@ Steps:
    - ikm, input key material.
 
    Steps:
-   1. dh1 = sk1 * pk1
-   2. dh2 = sk2 * pk2
-   3. dh3 = sk3 * pk3
+   1. dh1 = SerializeElement(sk1 * pk1)
+   2. dh2 = SerializeElement(sk2 * pk2)
+   3. dh3 = SerializeElement(sk3 * pk3)
    4. Output concat(dh1, dh2, dh3)
 
    Using this shared secret, further keys used for encryption and
@@ -1374,15 +1374,15 @@ Steps:
 3. ke1 = Start(request)
 4. Output ke1
 
-ClientFinish(password, client_identity, server_identity, ke1, ke2)
+ClientFinish(client_identity, password, server_identity, ke1, ke2)
 
 State:
 - state, a ClientState structure
 
 Input:
-- password, an opaque byte string containing the client's password.
 - client_identity, the optional encoded client identity, which is set
   to client_public_key if not specified.
+- password, an opaque byte string containing the client's password.
 - server_identity, the optional encoded server identity, which is set
   to server_public_key if not specified.
 - ke1, a KE1 message structure.
