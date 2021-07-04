@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-07-01T00:59:47.709790+00:00",
+  "timestamp": "2021-07-04T00:57:58.763129+00:00",
   "repo": "cfrg/draft-irtf-cfrg-opaque",
   "labels": [
     {
@@ -5085,7 +5085,7 @@
       "id": "MDU6SXNzdWU4OTk5OTE5OTQ=",
       "title": "Revisiting user enumeration",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/210",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -5094,9 +5094,45 @@
       "labels": [],
       "body": "Currently, OPAQUE has support [1] for preventing user enumeration during online _authentication_. It does not, however, prevent an attacker from using the offline _registration_ flow. (This was somewhat touched in #22.) \r\n\r\nThis raises an important question: is the complexity of the enumeration attack prevention and mitigation useful given that the registration flow may already be exploited to learn this same information? \r\n\r\n@kevinlewi points out that the registration flow may have different restrictions in terms of who can trigger it. For example:\r\n\r\n- Registration may be done once during some offline \u201cbootstrap\u201d or configuration step, thereby removing any registration oracle entirely. \r\n- Registration flows may be rate limited or otherwise restricted to attackers, in contrast to the authentication flow which may not have such restrictions. \r\n\r\nIn general, this seems to boil down the use case. I don\u2019t have enough experience with asymmetric PAKE applications to know how registration typically works. I hope we can use this issue to track the question above. \r\n\r\n[1] Assuming that servers construct fake CredentialResponse values without obvious side channels when a user does not exist.",
       "createdAt": "2021-05-24T20:43:19Z",
-      "updatedAt": "2021-06-17T17:19:48Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2021-07-01T19:05:42Z",
+      "closedAt": "2021-07-01T19:05:42Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Here's the current set of known enumeration attacks. We should fix (1) and document the rest (for now). Further mitigations against this problem do not seem like a net improvement given additional complexity induced.\r\n\r\n1) For a non-specified client_id (attacker sends a credential_request and no client_id), if the server wishes to engage in the protocol, it must decide on a credential_identifier. If it chooses a random value, the attacker can detect a change between two requests, and know the user does not exist. It the server uses a fixed value, and the attacker probes twice with client_ids that do not exist, the attacker can detect that too. The only mitigation is to not engage in the protocol when the request does not specify the client_id.\r\n\r\n2) If credential_identifier = client_id = email or username, and the user wants to change their email or username, the OPRF key would change. An attacker with probes before and after the change will detect that activity.\r\n\r\n3) If credential_identifier = random or hash(client_id), and a registered user wants to update their client_id, then the new client_id must be available and be mapped to the credential_identifier. The 'old' one needs to remain unavailable and mapped to the same credential_identifier, or an attacker could detect that change. Also, if an attacker probes for a non-existing client_id, the server must maintain some kind of state in the client_id<>credential_identifier mapping, either by maintaining a table (undesired) or using a hash function (better).\r\n\r\n4) credential_identifier = hash(client_id):\r\na. attacker tries \"user123\" -> server doesn't know \"user123\" -> uses hash(\"user123\") as credential_identifier -> attacker fingerprints it\r\nb. a legitimate user registers under \"user456\" -> server registers hash(\"user456\") as cred_id\r\nc. user wants to change id \"user456\" for \"user123\", which is not registered. The server needs to map the client_id \"user123\" to the credential_identifier hash(\"user456\"), if we don't want to leak activity about \"user456\". But that now leaks activity about \"user123\".\r\nd. a motivated attacker indexed a billion of client_ids, and can detect if an update matches a known result and see activity\r\n\r\ncc @hugokraw ",
+          "createdAt": "2021-07-01T12:49:24Z",
+          "updatedAt": "2021-07-01T12:49:24Z"
+        },
+        {
+          "author": "stef",
+          "authorAssociation": "NONE",
+          "body": "i'm not sure i followed all the details, but is this not all moot, since creating an account will always leak if a user id exists?",
+          "createdAt": "2021-07-01T12:54:19Z",
+          "updatedAt": "2021-07-01T12:54:19Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> i'm not sure i followed all the details, but is this not all moot, since creating an account will always leak if a user id exists?\r\n\r\nYep -- I think that's the key takeaway here. We shouldn't do anything to hide stuff that leaks naturally as a result of registration. ",
+          "createdAt": "2021-07-01T12:55:49Z",
+          "updatedAt": "2021-07-01T12:56:20Z"
+        },
+        {
+          "author": "hugokraw",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Some of these attacks would be addressed by running re-registration with\nanyone requesting a change of user-id.\n\nThe  case of a user trying to open an account with an existing\nuserid should be dealt with in the same way one opens a new account, e.g.,\nsending email to the requested email address. The attacker will not be able\nto respond and will not learn if the account existed or it did not. (Of\ncourse, this is an administrative issue, not something related to OPAQUE.)\n\nIn general, running user enumeration by registering userid's is not\ndifferent than in today's password-over-TLS practice (is it?) so it should\nbe dealt with in the same way. Am I missing something?\n\n\n\nOn Thu, Jul 1, 2021 at 8:56 AM Christopher Wood ***@***.***>\nwrote:\n\n> i'm not sure i followed all the details, but is this not all moot, since\n> creating an account will always leak if a user id exists?\n>\n> Yep -- I think that's the key takeaway here. We shouldn't do anything to\n> hide stuff that leaks naturally during registration.\n>\n> \u2014\n> You are receiving this because you were mentioned.\n> Reply to this email directly, view it on GitHub\n> <https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/210#issuecomment-872222686>,\n> or unsubscribe\n> <https://github.com/notifications/unsubscribe-auth/AICFFXX3TUGRWXUUKA4NQIDTVRQWHANCNFSM45N5DENQ>\n> .\n>\n",
+          "createdAt": "2021-07-01T15:20:53Z",
+          "updatedAt": "2021-07-01T15:20:53Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> In general, running user enumeration by registering userid's is not different than in today's password-over-TLS practice (is it?) so it should be dealt with in the same way. Am I missing something?\r\n\r\nThat matches my mental model for this. That means (2), (3), and (4) are all mitigated by the application, using whatever mechanism is done today. (1) is an authentication problem that can be baked into the protocol. I'll send a PR today to clarify this and close out this issue. ",
+          "createdAt": "2021-07-01T15:29:33Z",
+          "updatedAt": "2021-07-01T15:29:33Z"
+        }
+      ]
     },
     {
       "number": 215,
@@ -5248,7 +5284,7 @@
       "id": "MDU6SXNzdWU5MjA3MTcyMzU=",
       "title": "Comment around encrypted credentials text",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/221",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "claucece",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [
@@ -5257,8 +5293,8 @@
       "labels": [],
       "body": "The description of OPAQUE reads:\r\n\r\n```\r\nOPAQUE consists of two stages: registration and authenticated key exchange. In the first stage, a client registers its password with the server and stores its encrypted credentials on the server.\r\n```\r\n\r\nI really like this description but it might not be completely accurate as, as far as I understand, in the Internal mode, no encrypted credentials are stored, as the the client's private and public keys are deterministically derived from the OPRF output. Might be good to note that if what I'm saying is indeed correct ;)\r\n\r\n ",
       "createdAt": "2021-06-14T19:39:50Z",
-      "updatedAt": "2021-06-17T17:18:31Z",
-      "closedAt": null,
+      "updatedAt": "2021-07-01T19:05:33Z",
+      "closedAt": "2021-07-01T19:05:33Z",
       "comments": [
         {
           "author": "chris-wood",
@@ -5304,6 +5340,38 @@
       "createdAt": "2021-06-25T20:03:15Z",
       "updatedAt": "2021-06-29T01:42:09Z",
       "closedAt": "2021-06-29T01:42:09Z",
+      "comments": []
+    },
+    {
+      "number": 229,
+      "id": "MDU6SXNzdWU5MzQ4MDM4MjI=",
+      "title": "Shared secret concatenation",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/229",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The shared secret is currently computed as follows:\r\n\r\n```\r\n1. dh1 = sk1 * pk1\r\n2. dh2 = sk2 * pk2\r\n3. dh3 = sk3 * pk3\r\n4. Output concat(dh1, dh2, dh3)\r\n```\r\n\r\nWe should probably serialize the three DH values before concatenating them. Right now, it's sort of ambiguous as to how these are represented in memory and then concatenated. (This would be a no-op for groups like ristretto255, where elements are always of a fixed-length. So this is mostly editorial.)",
+      "createdAt": "2021-07-01T12:42:56Z",
+      "updatedAt": "2021-07-01T18:45:52Z",
+      "closedAt": "2021-07-01T18:45:52Z",
+      "comments": []
+    },
+    {
+      "number": 230,
+      "id": "MDU6SXNzdWU5MzQ4MDQ4NTE=",
+      "title": "Order of (password, client_identity)",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/230",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The order of (password, client_identity) inputs to ClientInit and ClientFinish is inconsistent. Let's make them consistent.",
+      "createdAt": "2021-07-01T12:44:11Z",
+      "updatedAt": "2021-07-01T18:46:00Z",
+      "closedAt": "2021-07-01T18:46:00Z",
       "comments": []
     }
   ],
@@ -17911,6 +17979,153 @@
           "body": "",
           "createdAt": "2021-06-29T01:29:37Z",
           "updatedAt": "2021-06-29T01:29:37Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 231,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjgxOTY2NzA4",
+      "title": "Fix parameter order. Clarify DH value concatenation.",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/231",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #229, #230.",
+      "createdAt": "2021-07-01T15:33:40Z",
+      "updatedAt": "2021-07-01T18:45:53Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "d60cb423c875ded5581d667ceabeee7b38c42531",
+      "headRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "headRefName": "caw/rearrange",
+      "headRefOid": "ce8c13495d03574a0c23cd1eb00ac523a334ae40",
+      "closedAt": "2021-07-01T18:45:53Z",
+      "mergedAt": "2021-07-01T18:45:52Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "707b784cad1168e8e63ece31ff6e9cefa3f38fd2"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njk3NTQyNTk1",
+          "commit": {
+            "abbreviatedOid": "ce8c134"
+          },
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-07-01T18:26:20Z",
+          "updatedAt": "2021-07-01T18:26:20Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 232,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjgxOTY4ODU5",
+      "title": "Clarify what's stored on the server during registration.",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/232",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #221.\r\n\r\ncc @claucece ",
+      "createdAt": "2021-07-01T15:36:42Z",
+      "updatedAt": "2021-07-01T23:00:03Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "d60cb423c875ded5581d667ceabeee7b38c42531",
+      "headRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "headRefName": "caw/clarify-storage",
+      "headRefOid": "44fd6285397cb8ef6cfa5971bf75a0a2cbd77ed8",
+      "closedAt": "2021-07-01T19:05:33Z",
+      "mergedAt": "2021-07-01T19:05:32Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "7f009d925fcfc06e31efb42333f009aa4a53aad5"
+      },
+      "comments": [
+        {
+          "author": "claucece",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "awesome! thank you @chris-wood ",
+          "createdAt": "2021-07-01T23:00:03Z",
+          "updatedAt": "2021-07-01T23:00:03Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njk3NTY3MjYy",
+          "commit": {
+            "abbreviatedOid": "44fd628"
+          },
+          "author": "kevinlewi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-07-01T19:00:40Z",
+          "updatedAt": "2021-07-01T19:00:40Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 233,
+      "id": "MDExOlB1bGxSZXF1ZXN0NjgyMDI5MDE4",
+      "title": "Clarify enumeration prevention limitations.",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-opaque/pull/233",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #210.\r\n\r\n",
+      "createdAt": "2021-07-01T17:05:24Z",
+      "updatedAt": "2021-07-01T19:05:42Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "baseRefName": "master",
+      "baseRefOid": "d60cb423c875ded5581d667ceabeee7b38c42531",
+      "headRepository": "cfrg/draft-irtf-cfrg-opaque",
+      "headRefName": "caw/clarify-enumeration",
+      "headRefOid": "6322c9379517d93ab79c4a1c5369b52f573c17c3",
+      "closedAt": "2021-07-01T19:05:42Z",
+      "mergedAt": "2021-07-01T19:05:42Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "5a76b127367d95cfd54848485b60952ec4cff0b8"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njk3NTM3NjY0",
+          "commit": {
+            "abbreviatedOid": "6322c93"
+          },
+          "author": "bytemare",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-07-01T18:19:18Z",
+          "updatedAt": "2021-07-01T18:19:18Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3Njk3NTY2OTM5",
+          "commit": {
+            "abbreviatedOid": "6322c93"
+          },
+          "author": "kevinlewi",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Great!",
+          "createdAt": "2021-07-01T19:00:13Z",
+          "updatedAt": "2021-07-01T19:00:13Z",
           "comments": []
         }
       ]
