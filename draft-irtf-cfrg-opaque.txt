@@ -5,12 +5,12 @@
 Network Working Group                                        H. Krawczyk
 Internet-Draft                                       Algorand Foundation
 Intended status: Informational                               D. Bourdrez
-Expires: 2 January 2022                                                 
+Expires: 9 January 2022                                                 
                                                                  K. Lewi
                                                            Novi Research
                                                                C.A. Wood
                                                               Cloudflare
-                                                             1 July 2021
+                                                             8 July 2021
 
 
                   The OPAQUE Asymmetric PAKE Protocol
@@ -49,7 +49,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 January 2022.
+   This Internet-Draft will expire on 9 January 2022.
 
 Copyright Notice
 
@@ -1891,6 +1891,11 @@ Steps:
    enables defense against such offline dictionary attacks by
    distributing the server so that an offline attack is only possible if
    all - or a minimal number of - servers are compromised [OPAQUE].)
+   Furthermore, if the server does not sample this OPRF key with
+   sufficiently high entropy, or if it is not kept hidden from an
+   adversary, then any derivatives from the client's password may also
+   be susceptible to an offline dictionary attack to recover the
+   original password.
 
    Some applications may require learning the client's password for
    enforcing password rules.  Doing so invalidates this important
@@ -1911,9 +1916,9 @@ Steps:
               Davidson, A., Faz-Hernandez, A., Sullivan, N., and C. A.
               Wood, "Oblivious Pseudorandom Functions (OPRFs) using
               Prime-Order Groups", Work in Progress, Internet-Draft,
-              draft-irtf-cfrg-voprf-06, 21 February 2021,
+              draft-irtf-cfrg-voprf-07, 6 July 2021,
               <https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-
-              voprf-06.txt>.
+              voprf-07>.
 
    [RFC2104]  Krawczyk, H., Bellare, M., and R. Canetti, "HMAC: Keyed-
               Hashing for Message Authentication", RFC 2104,
@@ -1977,7 +1982,7 @@ Steps:
               proof-of-work function", Work in Progress, Internet-Draft,
               draft-irtf-cfrg-argon2-13, 11 March 2021,
               <https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-
-              argon2-13.txt>.
+              argon2-13>.
 
    [JKKX16]   Jarecki, S., Kiayias, A., Krawczyk, H., and J. Xu,
               "Highly-efficient and composable password-protected secret
